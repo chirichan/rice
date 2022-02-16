@@ -19,4 +19,4 @@ jobs:
         go-version: 1.17
 
     - name: Publish package
-      run: GOPROXY=proxy.golang.org go list -m github.com/woxingliu/ha@${{ git describe --tags --abbrev=0 }}
+      run: GOPROXY=proxy.golang.org go list -m github.com/woxingliu/ha@${GITHUB_REF#refs/*/}
