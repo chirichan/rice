@@ -1,4 +1,4 @@
-package mysql
+package database
 
 import (
 	"database/sql"
@@ -31,7 +31,7 @@ func GetMariaDB() *MariaDB {
 	return mariadb
 }
 
-func New(url string, opts ...Option) *MariaDB {
+func NewMariaDB(url string, opts ...MariaDBOption) *MariaDB {
 
 	once.Do(func() {
 

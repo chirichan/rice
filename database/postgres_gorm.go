@@ -1,4 +1,4 @@
-package postgres
+package database
 
 import (
 	"database/sql"
@@ -60,17 +60,17 @@ func NewGormDB(dsn string, opts ...GormOption) *gorm.DB {
 
 type GormOption func(*sql.DB)
 
-func MaxIdleConns(n int) GormOption {
+func MaxIdleConns_PG_Gorm(n int) GormOption {
 	return func(db *sql.DB) {
 		db.SetMaxIdleConns(n)
 	}
 }
-func MaxOpenConns(n int) GormOption {
+func MaxOpenConns_PG_Gorm(n int) GormOption {
 	return func(db *sql.DB) {
 		db.SetMaxOpenConns(n)
 	}
 }
-func ConnMaxLifetime(d time.Duration) GormOption {
+func ConnMaxLifetime_PG_Gorm(d time.Duration) GormOption {
 	return func(db *sql.DB) {
 		db.SetConnMaxLifetime(d)
 	}

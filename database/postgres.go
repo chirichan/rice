@@ -1,11 +1,10 @@
 // Package postgres implements postgres connection.
-package postgres
+package database
 
 import (
 	"context"
 	"fmt"
 	"log"
-	"sync"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -29,11 +28,10 @@ type Postgres struct {
 }
 
 var (
-	once sync.Once
-	pg   *Postgres
+	pg *Postgres
 )
 
-func GetDB() *Postgres {
+func GetPostgresDB() *Postgres {
 	return pg
 }
 
@@ -42,7 +40,7 @@ func CloseDB() {
 }
 
 // New -.
-func New(url string, opts ...Option) (*Postgres, error) {
+func NewPostgresDB(url string, opts ...PostgresOption) (*Postgres, error) {
 	if pg == nil {
 
 		pg = &Postgres{
