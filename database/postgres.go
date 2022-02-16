@@ -1,4 +1,4 @@
-// Package postgres implements postgres connection.
+// Package database implements postgres connection.
 package database
 
 import (
@@ -39,7 +39,7 @@ func CloseDB() {
 	pg.Close()
 }
 
-// New -.
+// NewPostgresDB -.
 func NewPostgresDB(url string, opts ...PostgresOption) (*Postgres, error) {
 	if pg == nil {
 

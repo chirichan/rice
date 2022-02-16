@@ -20,7 +20,7 @@ func Close(db *gorm.DB) {
 	}
 }
 
-// "host=localhost user=postgres password=111111 dbname=user port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+// NewGormDB "host=localhost user=postgres password=111111 dbname=user port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 func NewGormDB(dsn string, opts ...GormOption) *gorm.DB {
 
 	once.Do(func() {
