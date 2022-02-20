@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/woxingliu/ha/database"
+	"github.com/woxingliu/rice/database"
 )
 
 func TestNewPostgresDB(t *testing.T) {

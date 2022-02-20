@@ -5,7 +5,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/woxingliu/ha/database"
+	"github.com/woxingliu/rice/database"
 )
 
 func TestNewMariaDB(t *testing.T) {

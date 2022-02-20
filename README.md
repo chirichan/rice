@@ -1,11 +1,11 @@
-# ha
+# rice
 
 ## Usage
 
 **Database**
 
 ```go
-import "github.com/woxingliu/ha/database"
+import "github.com/woxingliu/rice/database"
 ```
 
 ```bash

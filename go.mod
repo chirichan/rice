@@ -1,4 +1,4 @@
-module github.com/woxingliu/ha
+module github.com/woxingliu/rice
 
 go 1.17
 

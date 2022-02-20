@@ -1,4 +1,4 @@
-package ha
+package rice
 
 import (
 	"testing"
