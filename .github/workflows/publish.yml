@@ -19,4 +19,7 @@ jobs:
         go-version: 1.17
 
     - name: Publish package
-      run: GOPROXY=proxy.golang.org go list -m github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
+      run: |
+        GOPROXY=proxy.golang.org go list -m github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
+        curl -X POST https://pkg.go.dev/fetch/github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
+        go get github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
