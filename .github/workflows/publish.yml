@@ -22,4 +22,3 @@ jobs:
       run: |
         GOPROXY=proxy.golang.org go list -m github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
         curl -X POST https://pkg.go.dev/fetch/github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
-        go get github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
