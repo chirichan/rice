@@ -39,6 +39,10 @@ func StrconvParseInt(s string) int64 {
 // 1645270804 to "1645270804"
 func StrconvFormatInt(i int64) string { return strconv.FormatInt(i, 10) }
 
+// float64 to int64
+
+// int64 to float64
+
 // []byte to string
 func ByteString(b []byte) string {
 	/* #nosec G103 */
