@@ -3,15 +3,15 @@ package tests
 import (
 	"testing"
 
-	"github.com/woxingliu/rice/database"
+	"github.com/woxingliu/rice"
 )
 
 func TestNewPostgresDB(t *testing.T) {
 
-	pg, err := database.NewPostgresDB(
+	pg, err := rice.NewPostgresDB(
 		"postgres://postgres:123456@localhost:5432/user?sslmode=disable",
-		database.ConnAttempts_Postgres(10),
-		database.MaxPoolSize_Postgres(4),
+		rice.ConnAttempts_Postgres(10),
+		rice.MaxPoolSize_Postgres(4),
 	)
 	if err != nil {
 		t.Error(err)
