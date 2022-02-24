@@ -43,3 +43,30 @@ func TestStrconvFormatInt(t *testing.T) {
 		})
 	}
 }
+
+func TestStrconvParseFloat(t *testing.T) {
+	type args struct {
+		i int
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{name: "test1", args: args{85}, want: 0.85},
+		{name: "test2", args: args{0}, want: 0.00},
+		{name: "test3", args: args{1}, want: 0.01},
+		{name: "test4", args: args{100}, want: 1.00},
+		{name: "test5", args: args{80}, want: 0.80},
+		{name: "test6", args: args{20}, want: 0.20},
+		{name: "test7", args: args{99}, want: 0.99},
+		{name: "test8", args: args{999999999}, want: 9999999.99},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StrconvParseFloat(tt.args.i); got != tt.want {
+				t.Errorf("StrconvParseFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

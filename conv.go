@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"fmt"
 	"log"
 	"reflect"
 	"strconv"
@@ -42,6 +43,16 @@ func StrconvFormatInt(i int64) string { return strconv.FormatInt(i, 10) }
 // float64 to int64
 
 // int64 to float64
+
+// int/100 to float64 保留 2 位小数点
+func StrconvParseFloat(i int) float64 {
+	if f, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(i)/100), 64); err != nil {
+		log.Printf("err: %v\n", err)
+		return 0
+	} else {
+		return f
+	}
+}
 
 // []byte to string
 func ByteString(b []byte) string {
