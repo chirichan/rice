@@ -1,65 +1,69 @@
 package rice
 
 import (
+	"bytes"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 	"unsafe"
 )
 
-// time.Time to "2006-01-02 15:04:05"
+// TimeNowFormat time.Time to "2006-01-02 15:04:05"
 func TimeNowFormat() string { return time.Now().Format("2006-01-02 15:04:05") }
 
-// time.Time to "2006-01-02 15:04:05"
+// TimeFormat time.Time to "2006-01-02 15:04:05"
 func TimeFormat(tm time.Time) string { return tm.Format("2006-01-02 15:04:05") }
 
-// "2006-01-02 15:04:05" to time.Time
-func TimeParse(s string) time.Time {
-	tm, err := time.Parse("2006-01-02 15:04:05", s)
-	if err != nil {
-		log.Printf("err: %v\n", err)
+// TimeParse "2006-01-02 15:04:05" to time.Time
+func TimeParse(s string) (time.Time, error) {
+	if tm, err := time.Parse("2006-01-02 15:04:05", s); err != nil {
+		return time.Time{}, err
+	} else {
+		return tm, nil
 	}
-	return tm
 }
 
-// 1645270804 to time.Time
+// TimeUnix 1645270804 to time.Time
 func TimeUnix(sec int64) time.Time { return time.Unix(sec, 0) }
 
-// "1645270804" to 1645270804
-func StrconvParseInt(s string) int64 {
+// StrconvParseInt "1645270804" to 1645270804
+func StrconvParseInt(s string) (int64, error) {
 	if i, err := strconv.ParseInt(s, 10, 64); err != nil {
-		log.Printf("err: %v\n", err)
-		return 0
+		return 0, err
 	} else {
-		return i
+		return i, nil
 	}
 }
 
-// 1645270804 to "1645270804"
+// StrconvFormatInt 1645270804 to "1645270804"
 func StrconvFormatInt(i int64) string { return strconv.FormatInt(i, 10) }
 
 // float64 to int64
 
 // int64 to float64
 
-// int/100 to float64 保留 2 位小数点
-func StrconvParseFloat(i int) float64 {
+// StrconvParseFloat int/100 to float64 保留 2 位小数点
+// example: 2333 -> 23.33
+func StrconvParseFloat(i int) (float64, error) {
 	if f, err := strconv.ParseFloat(fmt.Sprintf("%.2f", float64(i)/100), 64); err != nil {
-		log.Printf("err: %v\n", err)
-		return 0
+		return 0, err
 	} else {
-		return f
+		return f, nil
 	}
 }
 
-// []byte to string
+// ByteString []byte to string
 func ByteString(b []byte) string {
-	/* #nosec G103 */
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-// string to []byte
+// BytesNewBufferString []byte to string
+func BytesNewBufferString(b []byte) string { return bytes.NewBuffer(b).String() }
+
+// FmtSprintfByte []byte to string
+func FmtSprintfByte(b []byte) string { return fmt.Sprintf("%s", b) }
+
+// StringByte string to []byte
 func StringByte(s string) []byte {
 
 	b := make([]byte, len(s))

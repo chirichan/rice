@@ -18,7 +18,7 @@ func TestStrconvParseInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StrconvParseInt(tt.args.s); got != tt.want {
+			if got, _ := StrconvParseInt(tt.args.s); got != tt.want {
 				t.Errorf("StrconvParseInt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -65,7 +65,7 @@ func TestStrconvParseFloat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StrconvParseFloat(tt.args.i); got != tt.want {
+			if got, _ := StrconvParseFloat(tt.args.i); got != tt.want {
 				t.Errorf("StrconvParseFloat() = %v, want %v", got, tt.want)
 			}
 		})
