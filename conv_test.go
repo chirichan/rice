@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -66,6 +67,30 @@ func TestStrconvParseFloat(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := StrconvParseFloat(tt.args.i); got != tt.want {
 				t.Errorf("StrconvParseFloat() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStringByte(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []byte
+	}{
+		// TODO: Add test cases.
+		{name: "test1", args: args{"hel, lo"}, want: []byte("hel, lo")},
+		{name: "test1", args: args{" hel, lo"}, want: []byte(" hel, lo")},
+		{name: "test1", args: args{"hel, lo "}, want: []byte("hel, lo ")},
+		{name: "test1", args: args{"hel ;lk😄lo"}, want: []byte("hel ;lk😄lo")},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StringByte(tt.args.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("StringByte() = %v, want %v", got, tt.want)
 			}
 		})
 	}
