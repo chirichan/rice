@@ -52,8 +52,9 @@ func NewRedisClient(addr string, opts ...RedisOption) *redis.Client {
 		s, err := redisClient.Ping(context.Background()).Result()
 		if err != nil {
 			log.Printf("redis连接失败: %v\n", err)
+		} else {
+			log.Printf("redis连接成功: %v\n", s)
 		}
-		log.Printf("redis连接成功: %v\n", s)
 	})
 
 	return redisClient
