@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/google/uuid"
 )
 
 // TimeNowFormat time.Time to "2006-01-02 15:04:05"
@@ -38,10 +41,6 @@ func StrconvParseInt(s string) (int64, error) {
 // StrconvFormatInt 1645270804 to "1645270804"
 func StrconvFormatInt(i int64) string { return strconv.FormatInt(i, 10) }
 
-// float64 to int64
-
-// int64 to float64
-
 // StrconvParseFloat int/100 to float64 保留 2 位小数点
 // example: 2333 -> 23.33
 func StrconvParseFloat(i int) (float64, error) {
@@ -53,9 +52,7 @@ func StrconvParseFloat(i int) (float64, error) {
 }
 
 // ByteString []byte to string
-func ByteString(b []byte) string {
-	return *(*string)(unsafe.Pointer(&b))
-}
+func ByteString(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
 
 // BytesNewBufferString []byte to string
 func BytesNewBufferString(b []byte) string { return bytes.NewBuffer(b).String() }
@@ -73,10 +70,13 @@ func StringByte(s string) []byte {
 	return b
 }
 
-func SliceRemoveIndex(slice []int, s int) []int {
-	return append(slice[:s], slice[s+1:]...)
-}
+// UUIDNewString creates a new random UUID
+func UUIDNewString() string { return strings.ReplaceAll(uuid.NewString(), "-", "") }
 
+// SliceRemoveIndex 移除 slice 中的一个元素
+func SliceRemoveIndex(slice []int, s int) []int { return append(slice[:s], slice[s+1:]...) }
+
+// SliceRemoveIndexUnOrder 移除 slice 中的一个元素（无序，但效率高）
 func SliceRemoveIndexUnOrder(s []int, i int) []int {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]

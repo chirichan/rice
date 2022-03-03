@@ -30,16 +30,9 @@ var (
 	pg *Postgres
 )
 
-func GetPostgresDB() *Postgres {
-	return pg
-}
-
-func CloseDB() {
-	pg.Close()
-}
-
 // NewPostgresDB -.
 func NewPostgresDB(url string, opts ...PostgresOption) (*Postgres, error) {
+
 	if pg == nil {
 
 		pg = &Postgres{
@@ -78,11 +71,15 @@ func NewPostgresDB(url string, opts ...PostgresOption) (*Postgres, error) {
 		if err != nil {
 			return nil, fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
 		}
+
+		return pg, nil
 	} else {
 		return pg, nil
 	}
+}
 
-	return pg, nil
+func GetPostgresDB() *Postgres {
+	return pg
 }
 
 // Close -.
@@ -96,21 +93,21 @@ func (p *Postgres) Close() {
 type PostgresOption func(*Postgres)
 
 // MaxPoolSize -.
-func MaxPoolSize_Postgres(size int) PostgresOption {
+func MaxPoolSize(size int) PostgresOption {
 	return func(c *Postgres) {
 		c.maxPoolSize = size
 	}
 }
 
 // ConnAttempts -.
-func ConnAttempts_Postgres(attempts int) PostgresOption {
+func ConnAttempts(attempts int) PostgresOption {
 	return func(c *Postgres) {
 		c.connAttempts = attempts
 	}
 }
 
 // ConnTimeout -.
-func ConnTimeout_Postgres(timeout time.Duration) PostgresOption {
+func ConnTimeout(timeout time.Duration) PostgresOption {
 	return func(c *Postgres) {
 		c.connTimeout = timeout
 	}

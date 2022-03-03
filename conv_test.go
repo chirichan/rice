@@ -95,3 +95,26 @@ func TestStringByte(t *testing.T) {
 		})
 	}
 }
+
+func TestSliceRemoveIndexUnOrder(t *testing.T) {
+	type args struct {
+		s []int
+		i int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		// TODO: Add test cases.
+		{name: "test1", args: args{s: []int{2, 4, 8, 9}, i: 2}, want: []int{2, 4, 9}},
+		{name: "test2", args: args{s: []int{9, 99, 14, 345345, 453, 90, 239, 29832}, i: 3}, want: []int{9, 99, 14, 453, 90, 239, 29832}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SliceRemoveIndexUnOrder(tt.args.s, tt.args.i); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("SliceRemoveIndexUnOrder() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

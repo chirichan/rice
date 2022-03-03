@@ -2,37 +2,56 @@ package rice
 
 import (
 	"context"
-	"log"
-	"sync"
-
 	"github.com/go-redis/redis/v8"
+	"log"
 )
 
-var (
-	redis_once  sync.Once
-	redisClient *Redis
+const (
+	_defaultPoolSize = 10
+	_defaultPassword = ""
+	_defaultDB       = 0
 )
 
-type Redis struct {
-	*redis.Client
-	ctx context.Context
+var redisClient *redis.Client
+
+type RedisOption func(*redis.Options)
+
+func RedisPoolSize(poolSize int) RedisOption {
+	return func(options *redis.Options) {
+		options.PoolSize = poolSize
+	}
 }
 
-func NewRedisClient(addr, pwd string, db, poolSize int) *Redis {
+func RedisPassword(pwd string) RedisOption {
+	return func(options *redis.Options) {
+		options.Password = pwd
+	}
+}
 
-	redis_once.Do(func() {
-		redisClient = &Redis{
-			Client: redis.NewClient(&redis.Options{
-				Addr:     addr,
-				Password: pwd,
-				DB:       db,
-				PoolSize: poolSize,
-			}),
-			ctx: context.Background(),
+func RedisDB(db int) RedisOption {
+	return func(options *redis.Options) {
+		options.DB = db
+	}
+}
+
+func NewRedisClient(addr string, opts ...RedisOption) *redis.Client {
+
+	once.Do(func() {
+		options := &redis.Options{
+			Addr:     addr,
+			Password: _defaultPassword,
+			DB:       _defaultDB,
 		}
-		s, err := redisClient.Ping(redisClient.ctx).Result()
+
+		for _, opt := range opts {
+			opt(options)
+		}
+
+		redisClient = redis.NewClient(options)
+
+		s, err := redisClient.Ping(context.Background()).Result()
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("redis连接失败: %v\n", err)
 		}
 		log.Printf("redis连接成功: %v\n", s)
 	})
@@ -40,11 +59,13 @@ func NewRedisClient(addr, pwd string, db, poolSize int) *Redis {
 	return redisClient
 }
 
-func (r *Redis) Close() {
-	if r.Client != nil {
-		err := r.Client.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
+func GetRedisClient() *redis.Client { return redisClient }
+
+func CloseRedisClient() error {
+	if redisClient != nil {
+		err := redisClient.Close()
+		return err
+	} else {
+		return nil
 	}
 }
