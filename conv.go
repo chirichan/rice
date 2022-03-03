@@ -72,3 +72,12 @@ func StringByte(s string) []byte {
 
 	return b
 }
+
+func SliceRemoveIndex(slice []int, s int) []int {
+	return append(slice[:s], slice[s+1:]...)
+}
+
+func SliceRemoveIndexUnOrder(s []int, i int) []int {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
+}
