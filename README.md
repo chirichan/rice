@@ -1,7 +1,5 @@
 # rice
 
-封装了一些常用但又记不住名字的方法。
-
 ```go
 import "github.com/woxingliu/rice"
 ```
@@ -14,58 +12,71 @@ go mod tidy
 
 **Database**
 
-postgresql
+`Postgresql` 初始化
 
 ```go
-pg, err := rice.NewPostgresDB("postgres://postgres:123456@localhost:5432/user?sslmode=disable")
+pg, err := rice.NewPostgres("postgres://postgres:123456@localhost:5432/test?sslmode=disable")
 if err != nil {
-    return err
+	return err
 }
 defer pg.Close()
 ```
 
-mariadb
+`MariaDB` 初始化
 
 ```go
-mariaDB := rice.NewMariaDB("root:root@tcp(localhost:3306)/user?parseTime=True&loc=Local&charset=utf8mb4")
-defer mariaDB.Close()
+mariadb, err := rice.NewMaria("root:root@tcp(localhost:3306)/test?parseTime=True&loc=Local&charset=utf8mb4")
+if err != nil {
+	return err
+}
+defer mariadb.Close()
 ```
 
-redis
+`Redis` 初始化
 
 ```go
-rdb := rice.NewRedisClient("localhost:6379")
+rdb, err := rice.NewRedis("localhost:6379")
+if err != nil {
+	return err
+}
 defer rdb.Close()
 ```
 
-customer
+`Pretty` 封装了 `database/sql` 标准库里 `sql.DB` 和 `sql.Tx` 共有的一些方法，使用 `Pretty` 时可以在 repo 的上一层初始化，使 repo 层既可以执行 `sql.DB` 的方法，也可以执行 `sql.Tx` 的方法，下面是示例。
 
 ```go
+package repo
 
 type Repo struct {
-	Customer
+	Pretty
 }
 
-func NewRepo(customer Customer) Repo {
-	return Repo{Customer: customer}
+func NewRepo(db Pretty) Repo {
+	return Repo{Pretty: db}
 }
 
 func (r Repo) Create() error { return nil }
 
 func (r Repo) Update() error { return nil }
 
-func UsecaseDB() {
+func (r Repo) Find() error { return nil }
+```
 
-	db := NewCustomerDB()
+```go
+package usecase
+
+func UseCaseDB() {
+
+	db := NewMariaDB()
 
 	dbRepo := NewRepo(db)
 
-	dbRepo.Create()
+	dbRepo.Find()
 }
 
-func UsecaseTx() error {
+func UseCaseTx() error {
 
-	tx := NewCustomerTx()
+	tx, _ := NewMariaTx()
 	defer tx.Rollback()
 
 	txRepo := NewRepo(tx)
@@ -86,6 +97,5 @@ func UsecaseTx() error {
 
 	return nil
 }
+```
 
-```
-```

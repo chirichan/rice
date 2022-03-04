@@ -1,8 +1,8 @@
 package rice
 
 import (
+	"context"
 	"database/sql"
-	"log"
 	"sync"
 	"time"
 
@@ -17,8 +17,8 @@ import (
 // )
 
 var (
-	once    sync.Once
-	mariadb *MariaDB
+	mariaOnce sync.Once
+	mariadb   = &MariaDB{}
 )
 
 type MariaDB struct {
@@ -33,72 +33,29 @@ func (db *MariaDB) Close() {
 	}
 }
 
-// func (*MariaDB) Commit() error
-// func (*MariaDB) Rollback() error
+func NewMaria(url string, opts ...Option) (*MariaDB, error) {
 
-func NewMariaDB(url string, opts ...MariaDBOption) *MariaDB {
+	var err error
 
-	once.Do(func() {
+	mariaOnce.Do(func() {
 
-		db, err := sql.Open("mysql", url)
+		mariadb.DB, err = sql.Open("mysql", url)
 		if err != nil {
-			log.Fatalf("mariadb连接失败: %v\n", err)
+			return
 		}
-
-		mariadb = &MariaDB{DB: db}
 
 		for _, opt := range opts {
-			opt(mariadb)
+			opt(mariadb.DB)
 		}
+
+		err = mariadb.Ping()
 	})
 
-	return mariadb
+	return mariadb, err
 }
 
-func GetMariaDB() *MariaDB {
-	return mariadb
-}
+func NewMariaDB() PrettyDB { return mariadb }
 
-type MariaDBOption func(*MariaDB)
+func NewMariaTx() (PrettyTx, error) { return mariadb.Begin() }
 
-// ConnMaxIdleTime_MYSQL 一个连接空闲的最大时长
-func ConnMaxIdleTime_MYSQL(d time.Duration) MariaDBOption {
-	return func(c *MariaDB) {
-		c.DB.SetConnMaxIdleTime(d)
-	}
-}
-
-// ConnMaxLifetime_MYSQL 一个连接使用的最大时长
-func ConnMaxLifetime_MYSQL(d time.Duration) MariaDBOption {
-	return func(c *MariaDB) {
-		c.DB.SetConnMaxLifetime(d)
-	}
-}
-
-// MaxIdleConns_MYSQL 最大闲置的连接数
-func MaxIdleConns_MYSQL(size int) MariaDBOption {
-	return func(c *MariaDB) {
-		c.DB.SetMaxIdleConns(size)
-	}
-}
-
-// MaxOpenConns_MYSQL 最大打开的连接数
-func MaxOpenConns_MYSQL(size int) MariaDBOption {
-	return func(c *MariaDB) {
-		c.DB.SetMaxOpenConns(size)
-	}
-}
-
-// ConnAttempts_MYSQL 尝试连接数据库次数
-func ConnAttempts_MYSQL(attempts int) MariaDBOption {
-	return func(c *MariaDB) {
-		c.connAttempts = attempts
-	}
-}
-
-// ConnTimeout_MYSQL 连接数据库超时时间
-func ConnTimeout_MYSQL(timeout time.Duration) MariaDBOption {
-	return func(c *MariaDB) {
-		c.connTimeout = timeout
-	}
-}
+func NewMariaTxContext(ctx context.Context) (PrettyTx, error) { return mariadb.BeginTx(ctx, nil) }

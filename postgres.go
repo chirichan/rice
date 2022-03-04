@@ -2,12 +2,11 @@ package rice
 
 import (
 	"context"
-	"fmt"
-	"log"
+	"database/sql"
+	"sync"
 	"time"
 
-	"github.com/Masterminds/squirrel"
-	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -16,99 +15,43 @@ const (
 	_defaultConnTimeout  = time.Second
 )
 
-// Postgres -.
-type Postgres struct {
-	maxPoolSize  int
-	connAttempts int
-	connTimeout  time.Duration
-
-	Builder squirrel.StatementBuilderType
-	Pool    *pgxpool.Pool
-}
-
 var (
-	pg *Postgres
+	pgOnce   sync.Once
+	postgres = &Postgres{}
 )
 
-// NewPostgresDB -.
-func NewPostgresDB(url string, opts ...PostgresOption) (*Postgres, error) {
+type Postgres struct {
+	*sql.DB
+}
 
-	if pg == nil {
+func (db *Postgres) Close() {
+	if db.DB != nil {
+		db.DB.Close()
+	}
+}
 
-		pg = &Postgres{
-			maxPoolSize:  _defaultMaxPoolSize,
-			connAttempts: _defaultConnAttempts,
-			connTimeout:  _defaultConnTimeout,
+func NewPostgres(url string, opts ...Option) (*Postgres, error) {
+
+	var err error
+
+	pgOnce.Do(func() {
+		postgres.DB, err = sql.Open("postgres", url)
+		if err != nil {
+			return
 		}
 
-		// Custom options
 		for _, opt := range opts {
-			opt(pg)
+			opt(postgres.DB)
 		}
 
-		pg.Builder = squirrel.StatementBuilder.PlaceholderFormat(squirrel.Dollar)
+		err = postgres.Ping()
+	})
 
-		poolConfig, err := pgxpool.ParseConfig(url)
-		if err != nil {
-			return nil, fmt.Errorf("postgres - NewPostgres - pgxpool.ParseConfig: %w", err)
-		}
-
-		poolConfig.MaxConns = int32(pg.maxPoolSize)
-
-		for pg.connAttempts > 0 {
-			pg.Pool, err = pgxpool.ConnectConfig(context.Background(), poolConfig)
-			if err == nil {
-				break
-			}
-
-			log.Printf("Postgres is trying to connect, attempts left: %d", pg.connAttempts)
-
-			time.Sleep(pg.connTimeout)
-
-			pg.connAttempts--
-		}
-
-		if err != nil {
-			return nil, fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
-		}
-
-		return pg, nil
-	} else {
-		return pg, nil
-	}
+	return postgres, err
 }
 
-func GetPostgresDB() *Postgres {
-	return pg
-}
+func NewPostgresDB() PrettyDB { return postgres }
 
-// Close -.
-func (p *Postgres) Close() {
-	if p.Pool != nil {
-		p.Pool.Close()
-	}
-}
+func NewPostgresTx() (PrettyTx, error) { return postgres.Begin() }
 
-// Option -.
-type PostgresOption func(*Postgres)
-
-// MaxPoolSize -.
-func MaxPoolSize(size int) PostgresOption {
-	return func(c *Postgres) {
-		c.maxPoolSize = size
-	}
-}
-
-// ConnAttempts -.
-func ConnAttempts(attempts int) PostgresOption {
-	return func(c *Postgres) {
-		c.connAttempts = attempts
-	}
-}
-
-// ConnTimeout -.
-func ConnTimeout(timeout time.Duration) PostgresOption {
-	return func(c *Postgres) {
-		c.connTimeout = timeout
-	}
-}
+func NewPostgresTxContext(ctx context.Context) (PrettyTx, error) { return postgres.BeginTx(ctx, nil) }
