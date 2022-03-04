@@ -19,7 +19,7 @@ postgresql
 ```go
 pg, err := rice.NewPostgresDB("postgres://postgres:123456@localhost:5432/user?sslmode=disable")
 if err != nil {
-	return err
+    return err
 }
 defer pg.Close()
 ```
@@ -29,6 +29,13 @@ mariadb
 ```go
 mariaDB := rice.NewMariaDB("root:root@tcp(localhost:3306)/user?parseTime=True&loc=Local&charset=utf8mb4")
 defer mariaDB.Close()
+```
+
+redis
+
+```go
+rdb := rice.NewRedisClient("localhost:6379")
+defer rdb.Close()
 ```
 
 customer
@@ -80,4 +87,5 @@ func UsecaseTx() error {
 	return nil
 }
 
+```
 ```
