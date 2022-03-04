@@ -7,12 +7,7 @@ import (
 )
 
 func TestNewPostgresDB(t *testing.T) {
-
-	pg, err := rice.NewPostgresDB(
-		"postgres://postgres:123456@localhost:5432/user?sslmode=disable",
-		rice.ConnAttempts_Postgres(10),
-		rice.MaxPoolSize_Postgres(4),
-	)
+	pg, err := rice.NewPostgresDB("postgres://postgres:123456@localhost:5432/user?sslmode=disable")
 	if err != nil {
 		t.Error(err)
 	}

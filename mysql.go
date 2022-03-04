@@ -33,6 +33,9 @@ func (db *MariaDB) Close() {
 	}
 }
 
+// func (*MariaDB) Commit() error
+// func (*MariaDB) Rollback() error
+
 func NewMariaDB(url string, opts ...MariaDBOption) *MariaDB {
 
 	once.Do(func() {
