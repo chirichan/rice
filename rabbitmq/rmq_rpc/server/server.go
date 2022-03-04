@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/streadway/amqp"
-	rmqrpc "github.com/woxingliu/rice/database/rabbitmq/rmq_rpc"
+	rmqrpc "github.com/woxingliu/rice/rabbitmq/rmq_rpc"
 )
 
 const (

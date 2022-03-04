@@ -34,6 +34,7 @@ defer mariaDB.Close()
 customer
 
 ```go
+
 type Repo struct {
 	Customer
 }
@@ -44,18 +45,39 @@ func NewRepo(customer Customer) Repo {
 
 func (r Repo) Create() error { return nil }
 
-func Usecase() {
+func (r Repo) Update() error { return nil }
+
+func UsecaseDB() {
 
 	db := NewCustomerDB()
+
+	dbRepo := NewRepo(db)
+
+	dbRepo.Create()
+}
+
+func UsecaseTx() error {
+
 	tx := NewCustomerTx()
 	defer tx.Rollback()
 
-	dbRepo := NewRepo(db)
 	txRepo := NewRepo(tx)
 
-	dbRepo.Create()
-	txRepo.Create()
+	err := txRepo.Create()
+	if err != nil {
+		return err
+	}
 
-	tx.Commit()
+	err = txRepo.Update()
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
 }
+
 ```
