@@ -33,13 +33,13 @@ func (db *MariaDB) Close() {
 	}
 }
 
-func NewMaria(url string, opts ...Option) (*MariaDB, error) {
+func NewMaria(dsn string, opts ...Option) (*MariaDB, error) {
 
 	var err error
 
 	mariaOnce.Do(func() {
 
-		mariadb.DB, err = sql.Open("mysql", url)
+		mariadb.DB, err = sql.Open("mysql", dsn)
 		if err != nil {
 			return
 		}

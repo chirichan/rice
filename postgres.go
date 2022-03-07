@@ -30,12 +30,12 @@ func (db *Postgres) Close() {
 	}
 }
 
-func NewPostgres(url string, opts ...Option) (*Postgres, error) {
+func NewPostgres(dsn string, opts ...Option) (*Postgres, error) {
 
 	var err error
 
 	pgOnce.Do(func() {
-		postgres.DB, err = sql.Open("postgres", url)
+		postgres.DB, err = sql.Open("postgres", dsn)
 		if err != nil {
 			return
 		}
