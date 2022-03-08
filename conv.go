@@ -70,6 +70,16 @@ func StringByte(s string) []byte {
 	return b
 }
 
+// StringByteUnsafe string to []byte
+func StringByteUnsafe(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{s, len(s)},
+	))
+}
+
 // UUIDNewString creates a new random UUID
 func UUIDNewString() string { return strings.ReplaceAll(uuid.NewString(), "-", "") }
 
