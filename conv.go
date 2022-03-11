@@ -2,13 +2,16 @@ package rice
 
 import (
 	"bytes"
+	"crypto/rand"
 	"fmt"
+	"math/big"
 	"strconv"
 	"strings"
 	"time"
 	"unsafe"
 
 	"github.com/google/uuid"
+	"github.com/rs/xid"
 )
 
 // TimeNowFormat time.Time to "2006-01-02 15:04:05"
@@ -82,6 +85,17 @@ func StringByteUnsafe(s string) []byte {
 
 // UUIDNewString creates a new random UUID
 func UUIDNewString() string { return strings.ReplaceAll(uuid.NewString(), "-", "") }
+
+// RandInt 生成一个真随机数
+func RandInt(max int64) (int64, error) {
+	if result, err := rand.Int(rand.Reader, big.NewInt(max)); err != nil {
+		return 0, err
+	} else {
+		return result.Int64(), nil
+	}
+}
+
+func XidNewString() string { return xid.New().String() }
 
 // SliceRemoveIndex 移除 slice 中的一个元素
 func SliceRemoveIndex(slice []int, s int) []int { return append(slice[:s], slice[s+1:]...) }

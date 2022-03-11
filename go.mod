@@ -7,6 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/lib/pq v1.10.2
+	github.com/rs/xid v1.2.1
 	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.2.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0

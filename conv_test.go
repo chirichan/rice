@@ -2,6 +2,7 @@ package rice
 
 import (
 	"reflect"
+	"sync"
 	"testing"
 )
 
@@ -117,4 +118,21 @@ func TestSliceRemoveIndexUnOrder(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRandInt(t *testing.T) {
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10000; i++ {
+		wg.Add(1)
+		go func() {
+			a, err := RandInt(10)
+			if err != nil {
+				t.Error(err)
+			}
+			t.Log(a)
+			wg.Done()
+		}()
+	}
+	wg.Wait()
 }
