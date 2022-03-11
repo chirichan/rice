@@ -1,7 +1,9 @@
 package rice
 
 import (
+	"fmt"
 	"testing"
+	"time"
 )
 
 func TestAESEncrypt(t *testing.T) {
@@ -81,4 +83,30 @@ func TestAESNewGCMDecrypt(t *testing.T) {
 	}
 
 	t.Error(s)
+}
+
+func TestLocation(t *testing.T) {
+
+	l, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Errorf("l: %v\n", l)
+
+	time13 := time.Date(2022, 3, 11, 18, 46, 0, 0, time.Local)
+	fmt.Printf("time13: %v\n", time13)
+	fmt.Printf("time13.Unix(): %v\n", time13.Unix())
+
+	time14 := time.Date(2022, 3, 11, 18, 46, 0, 0, time.UTC)
+	fmt.Printf("time14: %v\n", time14)
+	fmt.Printf("time14.Unix(): %v\n", time14.Unix())
+
+	fmt.Printf("time.Now(): %v\n", time.Now())
+
+	fmt.Printf("time.Now().UTC(): %v\n", time.Now().UTC())
+
+	fmt.Printf("time.Now().UTC().Local(): %v\n", time.Now().UTC().Local())
+
+	fmt.Printf("time.Now().Local(): %v\n", time.Now().Local())
+
 }
