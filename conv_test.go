@@ -136,3 +136,8 @@ func TestRandInt(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func TestGetField(t *testing.T) {
+
+	t.Errorf("GetField(): %v\n", GetField())
+}

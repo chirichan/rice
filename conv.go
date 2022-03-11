@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -104,4 +105,18 @@ func SliceRemoveIndex(slice []int, s int) []int { return append(slice[:s], slice
 func SliceRemoveIndexUnOrder(s []int, i int) []int {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
+}
+
+type Hit struct {
+	Id int
+}
+
+func GetField() string {
+	fmt.Printf("reflect.TypeOf(&Hit{}).Name(): %v\n", reflect.TypeOf(Hit{}).Name())
+
+	var hit Hit
+	var hits []Hit
+	s := reflect.TypeOf(hit).Name()
+	fmt.Printf("reflect.TypeOf(hits).Name(): %v\n", reflect.TypeOf(hits).Elem().Name())
+	return s
 }
