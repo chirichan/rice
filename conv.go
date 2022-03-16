@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"fmt"
 	"math/big"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -99,24 +98,10 @@ func RandInt(max int64) (int64, error) {
 func XidNewString() string { return xid.New().String() }
 
 // SliceRemoveIndex 移除 slice 中的一个元素
-func SliceRemoveIndex(slice []int, s int) []int { return append(slice[:s], slice[s+1:]...) }
+func SliceRemoveIndex[T any](slice []T, s int) []T { return append(slice[:s], slice[s+1:]...) }
 
 // SliceRemoveIndexUnOrder 移除 slice 中的一个元素（无序，但效率高）
-func SliceRemoveIndexUnOrder(s []int, i int) []int {
+func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
-}
-
-type Hit struct {
-	Id int
-}
-
-func GetField() string {
-	fmt.Printf("reflect.TypeOf(&Hit{}).Name(): %v\n", reflect.TypeOf(Hit{}).Name())
-
-	var hit Hit
-	var hits []Hit
-	s := reflect.TypeOf(hit).Name()
-	fmt.Printf("reflect.TypeOf(hits).Name(): %v\n", reflect.TypeOf(hits).Elem().Name())
-	return s
 }
