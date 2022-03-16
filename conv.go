@@ -29,6 +29,12 @@ func TimeParse(s string) (time.Time, error) {
 	}
 }
 
+// TimeFormatDate time to date
+func TimeFormatDate(tm time.Time) string { return tm.Format("2006-01-02") }
+
+// TimeParseDate date to time
+func TimeParseDate(date string) (time.Time, error) { return time.Parse("2006-01-02", date) }
+
 // TimeUnix 1645270804 to time.Time
 func TimeUnix(sec int64) time.Time { return time.Unix(sec, 0) }
 
@@ -98,10 +104,12 @@ func RandInt(max int64) (int64, error) {
 func XidNewString() string { return xid.New().String() }
 
 // SliceRemoveIndex 移除 slice 中的一个元素
-func SliceRemoveIndex(slice []int, s int) []int { return append(slice[:s], slice[s+1:]...) }
+func SliceRemoveIndex[T any](s []T, index int) []T {
+	return append(s[:index], s[index+1:]...)
+}
 
 // SliceRemoveIndexUnOrder 移除 slice 中的一个元素（无序，但效率高）
-func SliceRemoveIndexUnOrder(s []int, i int) []int {
+func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
 }
