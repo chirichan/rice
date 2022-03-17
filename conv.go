@@ -102,14 +102,3 @@ func RandInt(max int64) (int64, error) {
 }
 
 func XidNewString() string { return xid.New().String() }
-
-// SliceRemoveIndex 移除 slice 中的一个元素
-func SliceRemoveIndex[T any](s []T, index int) []T {
-	return append(s[:index], s[index+1:]...)
-}
-
-// SliceRemoveIndexUnOrder 移除 slice 中的一个元素（无序，但效率高）
-func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
-}
