@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"sync"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -82,19 +83,14 @@ func RedisDB(db int) RedisOption {
 
 func NewRedisDB() *Redis { return redisClient }
 
-type Data interface {
-	Marshal() ([]byte, error)
-	Unmarshal(data []byte) error
-}
+func SetStruct(key string, data any, expiration ...time.Duration) error {
 
-func (rdb *Redis) SetStruct(key string, data Data) error {
-
-	b, err := data.Marshal()
+	b, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	_, err = rdb.Set(ctx, key, b, 0).Result()
+	_, err = redisClient.Set(ctx, key, b, 0).Result()
 	if err != nil {
 		return err
 	}
@@ -102,28 +98,30 @@ func (rdb *Redis) SetStruct(key string, data Data) error {
 	return nil
 }
 
-func (rdb *Redis) GetStruct(key string, data Data) error {
+func GetStruct[T any](key string) (T, error) {
 
-	b, err := rdb.Get(ctx, key).Bytes()
+	var data T
+
+	b, err := redisClient.Get(ctx, key).Bytes()
 	if err != nil {
-		return err
+		return data, err
 	}
 
 	err = json.Unmarshal(b, &data)
 	if err != nil {
-		return err
+		return data, err
 	}
-	return nil
+	return data, nil
 }
 
-func (rdb *Redis) HSetStruct(key string, field string, data Data) error {
+func HSetStruct(key string, field string, data any) error {
 
-	b, err := data.Marshal()
+	b, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	_, err = rdb.HSet(ctx, key, field, b).Result()
+	_, err = redisClient.HSet(ctx, key, field, b).Result()
 	if err != nil {
 		log.Println(err)
 		return err
@@ -132,16 +130,18 @@ func (rdb *Redis) HSetStruct(key string, field string, data Data) error {
 	return nil
 }
 
-func (rdb *Redis) HGetStruct(key string, field string, data Data) error {
+func HGetStruct[T any](key string, field string) (T, error) {
 
-	b, err := rdb.HGet(ctx, key, field).Bytes()
+	var data T
+
+	b, err := redisClient.HGet(ctx, key, field).Bytes()
 	if err != nil {
-		return err
+		return data, err
 	}
 
 	err = json.Unmarshal(b, &data)
 	if err != nil {
-		return err
+		return data, err
 	}
-	return nil
+	return data, nil
 }

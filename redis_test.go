@@ -3,7 +3,7 @@ package rice
 import (
 	"context"
 	"encoding/json"
-	"log"
+	"fmt"
 	"testing"
 )
 
@@ -30,34 +30,50 @@ func TestNewRedis(t *testing.T) {
 
 	user := User{
 		Id:   2,
-		Name: "test",
+		Name: "test123",
 	}
 
-	err = c.SetStruct("u1", &user)
+	err = HSetStruct("user", "u8", user)
 	if err != nil {
-		log.Println(err)
-		return
+		t.Error(err)
 	}
 
-	var user2 User
-	err = c.GetStruct("u3", &user2)
+	u2, err := HGetStruct[User]("user", "u8")
+	fmt.Printf("u2: %v\n", u2)
+
+	// err = c.SetStruct("u1", &user)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+
+	// var user2 User
+	// err = c.GetStruct("u3", &user2)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+
+	// var user3 User
+	// err = c.HSetStruct("user", "u6", &User{Id: 4, Name: "4444"})
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+	// err = c.HGetStruct("user", "u7", &user3)
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
+	// log.Println(user2.Name)
+
+	// log.Println(user3.Name)
+
+	u, err := GetStruct[User]("u1")
 	if err != nil {
-		log.Println(err)
-		return
+		t.Error(err)
 	}
 
-	var user3 User
-	err = c.HSetStruct("user", "u6", &User{Id: 4, Name: "4444"})
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	err = c.HGetStruct("user", "u7", &user3)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println(user2.Name)
+	fmt.Printf("u: %v\n", u)
 
-	log.Println(user3.Name)
 }
