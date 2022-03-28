@@ -1,6 +1,9 @@
 package rice
 
-import "time"
+import (
+	"sort"
+	"time"
+)
 
 // SliceRemoveIndex 移除 slice 中的一个元素
 func SliceRemoveIndex[T any](s []T, index int) []T {
@@ -98,4 +101,33 @@ func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anot
 	} else {
 		return true
 	}
+}
+
+// SliceIn e 是否在 s 中
+func SliceIn[T comparable](e T, s []T) bool {
+	for _, v := range s {
+		if v == e {
+			return true
+		}
+	}
+	return false
+}
+
+// booleans, numbers, strings, pointers, channels, arrays
+func MaxNumber[T Numbers](n ...T) T {
+
+	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
+
+	return n[len(n)-1]
+}
+
+func MinNumber[T Numbers](n ...T) T {
+
+	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
+
+	return n[0]
+}
+
+type Numbers interface {
+	uint8 | uint16 | uint32 | uint64 | int8 | int16 | int32 | int64 | float32 | float64 | int | uint
 }
