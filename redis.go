@@ -85,17 +85,45 @@ func NewRedisDB() *Redis { return redisClient }
 
 func SetStruct(key string, data any, expiration ...time.Duration) error {
 
+	var expire time.Duration
+
+	if len(expiration) == 1 {
+		expire = expiration[0]
+	} else {
+		expire = 0
+	}
+
 	b, err := json.Marshal(data)
 	if err != nil {
 		return err
 	}
 
-	_, err = redisClient.Set(ctx, key, b, 0).Result()
+	_, err = redisClient.Set(ctx, key, b, expire).Result()
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func DeleteStructByPrefix(prefix string) error {
+
+	iter := redisClient.Scan(ctx, 0, prefix+"*", 0).Iterator()
+
+	for iter.Next(ctx) {
+		err := redisClient.Del(ctx, iter.Val()).Err()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func DeleteStruct(key string) error {
+
+	_, err := redisClient.Del(ctx, key).Result()
+	return err
 }
 
 func GetStruct[T any](key string) (T, error) {
@@ -114,7 +142,7 @@ func GetStruct[T any](key string) (T, error) {
 	return data, nil
 }
 
-func HSetStruct(key string, field string, data any) error {
+func HSetStruct(key, field string, data any) error {
 
 	b, err := json.Marshal(data)
 	if err != nil {
@@ -130,7 +158,7 @@ func HSetStruct(key string, field string, data any) error {
 	return nil
 }
 
-func HGetStruct[T any](key string, field string) (T, error) {
+func HGetStruct[T any](key, field string) (T, error) {
 
 	var data T
 

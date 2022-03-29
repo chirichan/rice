@@ -8,6 +8,34 @@ import (
 	"unsafe"
 )
 
+// HMCompare 如果 1 > 2 return true
+// 小时和分钟 比较大小
+func HMCompare(h1, m1, h2, m2 int) bool {
+
+	t := time.Date(0, 0, 0, h1, m1, 0, 0, time.Local)
+	t2 := time.Date(0, 0, 0, h2, m2, 0, 0, time.Local)
+
+	if t.Unix() > t2.Unix() {
+		return true
+	} else {
+		return false
+	}
+}
+
+// BetweenDays 两个时间之间隔了多少天 startTime >= endTime
+func BetweenDays(startTime, endTime time.Time) int64 {
+
+	var days int64
+
+	startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, time.Local)
+	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), 0, 0, 0, 0, time.Local)
+
+	for i := startTime; i.Before(endTime); i = i.AddDate(0, 0, 1) {
+		days += 1
+	}
+	return days
+}
+
 // TimeNowFormat time.Time to "2006-01-02 15:04:05"
 func TimeNowFormat() string { return time.Now().Format("2006-01-02 15:04:05") }
 
