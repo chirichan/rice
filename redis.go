@@ -20,9 +20,9 @@ const (
 type Redis struct{ *redis.Client }
 
 var (
-	ctx         = context.Background()
-	redisOnce   sync.Once
-	redisClient = &Redis{}
+	ctx       = context.Background()
+	redisOnce sync.Once
+	rdb       = &Redis{}
 )
 
 // func NewRedisCluster(addrs []string, opts ...RedisOption) {
@@ -47,12 +47,12 @@ func NewRedis(addr string, opts ...RedisOption) (*Redis, error) {
 			opt(options)
 		}
 
-		redisClient.Client = redis.NewClient(options)
+		rdb.Client = redis.NewClient(options)
 
-		_, err = redisClient.Ping(context.Background()).Result()
+		_, err = rdb.Ping(context.Background()).Result()
 	})
 
-	return redisClient, err
+	return rdb, err
 }
 
 type RedisOption func(*redis.Options)
@@ -81,7 +81,7 @@ func RedisDB(db int) RedisOption {
 	}
 }
 
-func NewRedisDB() *Redis { return redisClient }
+func NewRedisDB() *Redis { return rdb }
 
 func SetStruct(key string, data any, expiration ...time.Duration) error {
 
@@ -98,7 +98,7 @@ func SetStruct(key string, data any, expiration ...time.Duration) error {
 		return err
 	}
 
-	_, err = redisClient.Set(ctx, key, b, expire).Result()
+	_, err = rdb.Set(ctx, key, b, expire).Result()
 	if err != nil {
 		return err
 	}
@@ -108,10 +108,10 @@ func SetStruct(key string, data any, expiration ...time.Duration) error {
 
 func DeleteStructByPrefix(prefix string) error {
 
-	iter := redisClient.Scan(ctx, 0, prefix+"*", 0).Iterator()
+	iter := rdb.Scan(ctx, 0, prefix+"*", 0).Iterator()
 
 	for iter.Next(ctx) {
-		err := redisClient.Del(ctx, iter.Val()).Err()
+		err := rdb.Del(ctx, iter.Val()).Err()
 		if err != nil {
 			return err
 		}
@@ -122,15 +122,17 @@ func DeleteStructByPrefix(prefix string) error {
 
 func DeleteStruct(key string) error {
 
-	_, err := redisClient.Del(ctx, key).Result()
+	_, err := rdb.Del(ctx, key).Result()
 	return err
 }
+
+func GetString(key string) string { return rdb.Get(ctx, key).String() }
 
 func GetStruct[T any](key string) (T, error) {
 
 	var data T
 
-	b, err := redisClient.Get(ctx, key).Bytes()
+	b, err := rdb.Get(ctx, key).Bytes()
 	if err != nil {
 		return data, err
 	}
@@ -149,7 +151,7 @@ func HSetStruct(key, field string, data any) error {
 		return err
 	}
 
-	_, err = redisClient.HSet(ctx, key, field, b).Result()
+	_, err = rdb.HSet(ctx, key, field, b).Result()
 	if err != nil {
 		log.Println(err)
 		return err
@@ -162,7 +164,7 @@ func HGetStruct[T any](key, field string) (T, error) {
 
 	var data T
 
-	b, err := redisClient.HGet(ctx, key, field).Bytes()
+	b, err := rdb.HGet(ctx, key, field).Bytes()
 	if err != nil {
 		return data, err
 	}

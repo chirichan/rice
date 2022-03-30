@@ -93,7 +93,7 @@ func TimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anoth
 	}
 }
 
-// IsHaveIntersectionTimestamp 两个时间段是否有交集 false 没有交集，true 有交集
+// TimestampExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
 func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anotherEndTime int64) bool {
 
 	if endTime < anotherStartTime || startTime > anotherEndTime {
@@ -113,7 +113,7 @@ func SliceIn[T comparable](e T, s []T) bool {
 	return false
 }
 
-// booleans, numbers, strings, pointers, channels, arrays
+// MaxNumber booleans, numbers, strings, pointers, channels, arrays
 func MaxNumber[T Numbers](n ...T) T {
 
 	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
