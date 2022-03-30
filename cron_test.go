@@ -13,6 +13,8 @@ func TestCronRun(t *testing.T) {
 	withTimeout, cancelFunc := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancelFunc()
 
+	// 0 8 * * *
+	// 0 8 * * 1
 	CronRun(withTimeout, "*/1 * * * * *", func() {
 		log.Println(time.Now())
 	})
