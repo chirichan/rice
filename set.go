@@ -128,6 +128,28 @@ func MinNumber[T Numbers](n ...T) T {
 	return n[0]
 }
 
+// NotIn e 不在 s 中吗？ true 不在， false 在
+func NotIn[T comparable](e T, s []T) bool {
+
+	for _, id := range s {
+		if e == id {
+			return false
+		}
+	}
+	return true
+}
+
+// In e 在 s 中吗？ true 在，false 不在
+func In[T comparable](e T, s []T) bool {
+
+	for _, id := range s {
+		if e == id {
+			return true
+		}
+	}
+	return false
+}
+
 type Numbers interface {
 	uint8 | uint16 | uint32 | uint64 | int8 | int16 | int32 | int64 | float32 | float64 | int | uint
 }
