@@ -85,7 +85,11 @@ func NewRedisDB() *Redis { return rdb }
 
 func SetStruct(key string, data any, expiration ...time.Duration) error {
 
-	var expire time.Duration
+	var (
+		expire time.Duration
+		b      []byte
+		err    error
+	)
 
 	if len(expiration) == 1 {
 		expire = expiration[0]
@@ -93,17 +97,39 @@ func SetStruct(key string, data any, expiration ...time.Duration) error {
 		expire = 0
 	}
 
-	b, err := json.Marshal(data)
-	if err != nil {
-		return err
+	if data == nil {
+		b = nil
+	} else {
+		b, err = json.Marshal(data)
+		if err != nil {
+			return err
+		}
 	}
 
 	_, err = rdb.Set(ctx, key, b, expire).Result()
+
+	return err
+}
+
+// GetStruct 如果 key 不存在，返回 error; 如果 key 为空，返回零值
+func GetStruct[T any](key string) (T, error) {
+
+	var data T
+
+	b, err := rdb.Get(ctx, key).Bytes()
 	if err != nil {
-		return err
+		return data, err
 	}
 
-	return nil
+	if len(b) == 0 {
+		return data, err
+	}
+
+	err = json.Unmarshal(b, &data)
+	if err != nil {
+		return data, err
+	}
+	return data, nil
 }
 
 func DeleteStructByPrefix(prefix string) error {
@@ -126,23 +152,22 @@ func DeleteStruct(key string) error {
 	return err
 }
 
-func GetString(key string) string { return rdb.Get(ctx, key).String() }
+func SetString(key, value string, expiration ...time.Duration) error {
 
-func GetStruct[T any](key string) (T, error) {
+	var expire time.Duration
 
-	var data T
-
-	b, err := rdb.Get(ctx, key).Bytes()
-	if err != nil {
-		return data, err
+	if len(expiration) == 1 {
+		expire = expiration[0]
+	} else {
+		expire = 0
 	}
 
-	err = json.Unmarshal(b, &data)
-	if err != nil {
-		return data, err
-	}
-	return data, nil
+	_, err := rdb.Set(ctx, key, value, expire).Result()
+
+	return err
 }
+
+func GetString(key string) string { return rdb.Get(ctx, key).String() }
 
 func HSetStruct(key, field string, data any) error {
 
