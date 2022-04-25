@@ -11,7 +11,7 @@ func TestNextId(t *testing.T) {
 	for i := 0; i < 600000; i++ {
 		wg.Add(1)
 		go func() {
-			t.Error(NextId())
+			t.Error(NextStringId())
 			wg.Done()
 		}()
 	}

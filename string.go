@@ -16,7 +16,9 @@ func init() {
 	idgen.SetIdGenerator(options)
 }
 
-func NextId() string { return strconv.FormatUint(idgen.NextId(), 10) }
+func NextStringId() string { return strconv.FormatUint(idgen.NextId(), 10) }
+
+func NextInt64Id() int64 { return int64(idgen.NextId()) }
 
 func XidNewString() string { return xid.New().String() }
 
