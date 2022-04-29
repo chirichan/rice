@@ -1,6 +1,14 @@
 package rice
 
-import "gopkg.in/natefinch/lumberjack.v2"
+import (
+	"io"
+	"os"
+	"strings"
+
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/pkgerrors"
+	"gopkg.in/natefinch/lumberjack.v2"
+)
 
 const (
 	_defaultFileName   = "default.log"
@@ -57,4 +65,49 @@ func Compress(b bool) LumberjackOption {
 	return func(logger *lumberjack.Logger) {
 		logger.Compress = b
 	}
+}
+
+var (
+	Logger *zerolog.Logger = &zerolog.Logger{}
+)
+
+var levelMap = map[string]zerolog.Level{
+	"debug":    zerolog.DebugLevel,
+	"info":     zerolog.InfoLevel,
+	"warn":     zerolog.WarnLevel,
+	"error":    zerolog.ErrorLevel,
+	"fatal":    zerolog.FatalLevel,
+	"panic":    zerolog.PanicLevel,
+	"no":       zerolog.NoLevel,
+	"disabled": zerolog.Disabled,
+	"trace":    zerolog.TraceLevel,
+	"":         zerolog.InfoLevel,
+}
+
+func Init(level, path string) {
+
+	if level == "" {
+		level = "debug"
+	}
+
+	if path == "" {
+		path = _defaultFileName
+	}
+
+	zerolog.SetGlobalLevel(levelMap[strings.ToLower(level)])
+	// zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.TimeFieldFormat = "2006/01/02 15:04:05"
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+
+	writers := make([]io.Writer, 0)
+
+	consoleWriter := zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "2006/01/02 15:04:05"}
+
+	fileWriter := NewLumberjackLogger(path)
+
+	writers = append(writers, fileWriter, consoleWriter)
+
+	multi := zerolog.MultiLevelWriter(writers...)
+
+	*Logger = zerolog.New(multi).With().Timestamp().Caller().Stack().Logger()
 }

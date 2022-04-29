@@ -9,12 +9,16 @@ require (
 	github.com/lib/pq v1.10.4
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.3.0
+	github.com/rs/zerolog v1.26.1
 	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.2.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
 
-require github.com/BurntSushi/toml v1.0.0 // indirect
+require (
+	github.com/BurntSushi/toml v1.0.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+)
 
 require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect

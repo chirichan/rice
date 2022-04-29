@@ -110,3 +110,25 @@ func StringByteUnsafe(s string) []byte {
 		}{s, len(s)},
 	))
 }
+
+func SliceToSlicePtr[T any](s []T) []*T {
+
+	s2 := make([]*T, 0)
+
+	for k := range s {
+		s2 = append(s2, &s[k])
+	}
+
+	return s2
+}
+
+func SlicePtrToSlice[T any](s []*T) []T {
+
+	s2 := make([]T, 0)
+
+	for k := range s {
+		s2 = append(s2, *s[k])
+	}
+
+	return s2
+}
