@@ -46,3 +46,22 @@ func TestTimerRun(t *testing.T) {
 	}
 
 }
+
+func TestTickerRunWithStartTimeContext(t *testing.T) {
+
+	var ctx = context.Background()
+	//var t1 int64 = 1651916258
+	var t2 = time.Date(2022, 5, 7, 17, 52, 20, 0, time.Local)
+	//sep := time.Duration(3600000000000)
+
+	err := TickerRunWithStartTimeContext(ctx, nil, t2, 2*time.Second, func(ctx context.Context) error {
+
+		log.Println(time.Now(), "A")
+		return nil
+	})
+
+	if err != nil {
+		t.Error(err)
+	}
+
+}

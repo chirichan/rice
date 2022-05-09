@@ -34,6 +34,13 @@ func TimerRun(ctx context.Context, tm time.Time, task ...Task) error {
 
 func TickerRun(ctx context.Context, d time.Duration, task ...Task) error {
 
+	for _, tk := range task {
+		err := tk()
+		if err != nil {
+			return err
+		}
+	}
+
 	ticker := time.NewTicker(d)
 	defer ticker.Stop()
 
@@ -79,6 +86,8 @@ func TickerRunWithStartTimeContext(ctx context.Context, wg *sync.WaitGroup, tm t
 	select {
 	case <-timer.C:
 
+		ctx := context.WithValue(ctx, "tm", time.Now())
+
 		err := TickerRunContext(ctx, d, task...)
 
 		return err
@@ -89,6 +98,13 @@ func TickerRunWithStartTimeContext(ctx context.Context, wg *sync.WaitGroup, tm t
 
 // TickerRunContext 立即开始以 ticker 的方式执行 task
 func TickerRunContext(ctx context.Context, d time.Duration, task ...TaskContext) error {
+
+	for _, tk := range task {
+		err := tk(ctx)
+		if err != nil {
+			return err
+		}
+	}
 
 	ticker := time.NewTicker(d)
 	defer ticker.Stop()
