@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 )
 
 func HttpGet[T any](url string) (T, error) {
@@ -31,7 +32,7 @@ func HttpGet[T any](url string) (T, error) {
 	return data, err
 }
 
-func UnWapperURL(r *http.Request) map[string]any {
+func UnWrapperURL(r *http.Request) map[string]any {
 
 	var urlValues = make(map[string]any)
 
@@ -49,20 +50,20 @@ func UnWapperURL(r *http.Request) map[string]any {
 	return urlValues
 }
 
-func UnWapperBody[T any](r *http.Request) (*T, error) {
-
-	defer func(body io.ReadCloser) {
-		err := body.Close()
-		if err != nil {
-			log.Printf("UnWapperBody-err: %+v", err)
-			return
-		}
-	}(r.Body)
+func UnWrapperBody[T any](r *http.Request) (*T, error) {
 
 	var (
 		data T
 		err  error
 	)
+
+	defer func(body io.ReadCloser) {
+		err = body.Close()
+		if err != nil {
+			log.Printf("UnWrapperBody-err: %+v", err)
+			return
+		}
+	}(r.Body)
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
@@ -73,14 +74,20 @@ func UnWapperBody[T any](r *http.Request) (*T, error) {
 	return &data, err
 }
 
-func Wapper(w http.ResponseWriter, data any) error {
+func ErrorWrapper(w http.ResponseWriter, code int, err error, msg ...string) error {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	d := ApiWapper{
-		Code: 0,
-		Data: data,
-		Msg:  "",
+	log.Printf("err: %+v", err)
+
+	d := ApiWrapper{
+		Code: code,
+	}
+
+	if len(msg) > 0 {
+		d.Msg = strings.Join(msg, ",")
+	} else {
+		d.Msg = err.Error()
 	}
 
 	b, err := json.Marshal(d)
@@ -93,7 +100,30 @@ func Wapper(w http.ResponseWriter, data any) error {
 	return err
 }
 
-type ApiWapper struct {
+func Wrapper(w http.ResponseWriter, data any, msg ...string) error {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	d := ApiWrapper{
+		Code: 0,
+		Data: data,
+	}
+
+	if len(msg) > 0 {
+		d.Msg = strings.Join(msg, ",")
+	}
+
+	b, err := json.Marshal(d)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(w, bytes.NewReader(b))
+
+	return err
+}
+
+type ApiWrapper struct {
 	Code int    `json:"code"`
 	Data any    `json:"data"`
 	Msg  string `json:"msg"`
