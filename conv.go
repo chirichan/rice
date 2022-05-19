@@ -60,6 +60,22 @@ func TimeParseDate(date string) (time.Time, error) { return time.Parse("2006-01-
 // TimeUnix 1645270804 to time.Time
 func TimeUnix(sec int64) time.Time { return time.Unix(sec, 0) }
 
+// TimeFormatUnixDate time to date
+func TimeFormatUnixDate(stamp int64) string { return time.Unix(stamp, 0).Format("2006-01-02") }
+
+// TimeFormatUnix time to date
+func TimeFormatUnix(stamp int64) string { return time.Unix(stamp, 0).Format("2006-01-02 15:04:05") }
+
+// TimeCompare 如果 t1>t2, return true, 如果 t1 <= t2, return false
+func TimeCompare(t1, t2 time.Time) bool {
+
+	if t1.After(t2) {
+		return true
+	} else {
+		return false
+	}
+}
+
 // StrconvParseInt "1645270804" to 1645270804
 func StrconvParseInt(s string) (int64, error) {
 	if i, err := strconv.ParseInt(s, 10, 64); err != nil {
@@ -89,7 +105,7 @@ func ByteString(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
 func BytesNewBufferString(b []byte) string { return bytes.NewBuffer(b).String() }
 
 // FmtSprintfByte []byte to string
-func FmtSprintfByte(b []byte) string { return fmt.Sprintf("%s", b) }
+// func FmtSprintfByte(b []byte) string { return fmt.Sprintf("%s", b) }
 
 // StringByte string to []byte
 func StringByte(s string) []byte {
