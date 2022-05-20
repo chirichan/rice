@@ -32,7 +32,7 @@ func HttpGet[T any](url string) (T, error) {
 	return data, err
 }
 
-func UnWrapperURL(r *http.Request) map[string]any {
+func UnWrapURL(r *http.Request) map[string]any {
 
 	var urlValues = make(map[string]any)
 
@@ -50,7 +50,7 @@ func UnWrapperURL(r *http.Request) map[string]any {
 	return urlValues
 }
 
-func UnWrapperBody[T any](r *http.Request) (*T, error) {
+func UnWrapBody[T any](r *http.Request) (*T, error) {
 
 	var (
 		data T
@@ -60,7 +60,7 @@ func UnWrapperBody[T any](r *http.Request) (*T, error) {
 	defer func(body io.ReadCloser) {
 		err = body.Close()
 		if err != nil {
-			log.Printf("UnWrapperBody-err: %+v", err)
+			log.Printf("UnWrapBody-err: %+v", err)
 			return
 		}
 	}(r.Body)
@@ -74,7 +74,7 @@ func UnWrapperBody[T any](r *http.Request) (*T, error) {
 	return &data, err
 }
 
-func ErrorWrapper(w http.ResponseWriter, code int, err error, msg ...string) error {
+func ErrorWrap(w http.ResponseWriter, code int, err error, msg ...string) error {
 
 	w.Header().Set("Content-Type", "application/json")
 
@@ -100,7 +100,7 @@ func ErrorWrapper(w http.ResponseWriter, code int, err error, msg ...string) err
 	return err
 }
 
-func Wrapper(w http.ResponseWriter, data any, msg ...string) error {
+func Wrap(w http.ResponseWriter, data any, msg ...string) error {
 
 	w.Header().Set("Content-Type", "application/json")
 

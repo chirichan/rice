@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"sync"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,8 +21,8 @@ var (
 )
 
 type MariaDB struct {
-	connAttempts int
-	connTimeout  time.Duration
+	// connAttempts int
+	// connTimeout  time.Duration
 	*sql.DB
 }
 
