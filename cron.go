@@ -148,3 +148,23 @@ func CronRun(ctx context.Context, corn string, task ...func()) error {
 		return nil
 	}
 }
+
+func CronRunM(ctx context.Context, corn string, task ...func()) error {
+
+	c := cron.New()
+	defer c.Stop()
+
+	for _, tk := range task {
+		_, err := c.AddFunc(corn, tk)
+		if err != nil {
+			return err
+		}
+	}
+
+	c.Start()
+
+	select {
+	case <-ctx.Done():
+		return nil
+	}
+}
