@@ -4,16 +4,15 @@ import (
 	"context"
 	"database/sql"
 	"sync"
-	"time"
 
 	_ "github.com/lib/pq"
 )
 
-const (
-	_defaultMaxPoolSize  = 1
-	_defaultConnAttempts = 2
-	_defaultConnTimeout  = time.Second
-)
+// const (
+// 	_defaultMaxPoolSize  = 1
+// 	_defaultConnAttempts = 2
+// 	_defaultConnTimeout  = time.Second
+// )
 
 var (
 	pgOnce   sync.Once

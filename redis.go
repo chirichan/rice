@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	_defaultAddr     = "127.0.0.1:6379"
-	_defaultPoolSize = 10
+	// _defaultAddr     = "127.0.0.1:6379"
+	// _defaultPoolSize = 10
 	_defaultPassword = ""
 	_defaultDB       = 0
 )

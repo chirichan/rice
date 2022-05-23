@@ -32,13 +32,12 @@ func HttpGet[T any](url string) (T, error) {
 	return data, err
 }
 
-func UnWrapURL(r *http.Request) map[string]any {
+func UnWrapURL(r *http.Request) (map[string]any, error) {
 
 	var urlValues = make(map[string]any)
 
 	if err := r.ParseForm(); err != nil {
-		log.Printf("err: %+v", err)
-		return nil
+		return nil, nil
 	}
 
 	for k, v := range r.Form {
@@ -47,7 +46,7 @@ func UnWrapURL(r *http.Request) map[string]any {
 		}
 	}
 
-	return urlValues
+	return urlValues, nil
 }
 
 func UnWrapBody[T any](r *http.Request) (*T, error) {

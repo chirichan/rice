@@ -38,7 +38,7 @@ func TestNewRedis(t *testing.T) {
 		t.Error(err)
 	}
 
-	u2, err := HGetStruct[User]("user", "u8")
+	u2, _ := HGetStruct[User]("user", "u8")
 	fmt.Printf("u2: %v\n", u2)
 
 	// err = c.SetStruct("u1", &user)

@@ -12,9 +12,11 @@ import (
 type Task func() error
 type TaskContext func(ctx context.Context) error
 
+type contextKey string
+
 func TimerRun(ctx context.Context, tm time.Time, task ...Task) error {
 
-	timer := time.NewTimer(tm.Sub(time.Now()))
+	timer := time.NewTimer(time.Until(tm))
 	defer timer.Stop()
 
 	select {
@@ -66,7 +68,7 @@ func TickerRunWithStartTimeContext(ctx context.Context, wg *sync.WaitGroup, tm t
 
 	for ; now.After(tm); tm = tm.Add(d) {
 
-		ctx = context.WithValue(ctx, "tm", tm)
+		ctx = context.WithValue(ctx, contextKey("tm"), tm)
 
 		for _, tk := range task {
 			err := tk(ctx)
@@ -80,13 +82,13 @@ func TickerRunWithStartTimeContext(ctx context.Context, wg *sync.WaitGroup, tm t
 		wg.Done()
 	}
 
-	timer := time.NewTimer(tm.Sub(time.Now()))
+	timer := time.NewTimer(time.Until(tm))
 	defer timer.Stop()
 
 	select {
 	case <-timer.C:
 
-		ctx := context.WithValue(ctx, "tm", time.Now())
+		ctx := context.WithValue(ctx, contextKey("tm"), time.Now())
 
 		err := TickerRunContext(ctx, d, task...)
 
@@ -113,7 +115,7 @@ func TickerRunContext(ctx context.Context, d time.Duration, task ...TaskContext)
 		select {
 		case <-ticker.C:
 
-			ctx := context.WithValue(ctx, "tm", time.Now())
+			ctx := context.WithValue(ctx, contextKey("tm"), time.Now())
 
 			for _, tk := range task {
 				err := tk(ctx)

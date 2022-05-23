@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type Numbers interface {
+	uint8 | uint16 | uint32 | uint64 | int8 | int16 | int32 | int64 | float32 | float64 | int | uint
+}
+
 // SliceRemoveIndex 移除 slice 中的一个元素
 func SliceRemoveIndex[T any](s []T, index int) []T {
 	return append(s[:index], s[index+1:]...)
@@ -150,6 +154,9 @@ func In[T comparable](e T, s []T) bool {
 	return false
 }
 
-type Numbers interface {
-	uint8 | uint16 | uint32 | uint64 | int8 | int16 | int32 | int64 | float32 | float64 | int | uint
+// Reverse 反转 slice
+func Reverse[T any](slice []T) {
+	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
+		slice[i], slice[j] = slice[j], slice[i]
+	}
 }
