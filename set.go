@@ -20,8 +20,8 @@ func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
 	return s[:len(s)-1]
 }
 
-// SliceSet slice 去重
-func SliceSet[T comparable](s1 []T) []T {
+// RemoveDuplicates slice 去重
+func RemoveDuplicates[T comparable](s1 []T) []T {
 
 	m1 := make(map[T]struct{})
 
@@ -36,6 +36,30 @@ func SliceSet[T comparable](s1 []T) []T {
 	}
 
 	return s2
+}
+
+// RemoveDuplicatesInPlace slice 就地去重
+func RemoveDuplicatesInPlace(userIDs []int64) []int64 {
+	// if there are 0 or 1 items we return the slice itself.
+	if len(userIDs) < 2 {
+		return userIDs
+	}
+
+	// make the slice ascending sorted.
+	sort.SliceStable(userIDs, func(i, j int) bool { return userIDs[i] < userIDs[j] })
+
+	uniqPointer := 0
+
+	for i := 1; i < len(userIDs); i++ {
+		// compare a current item with the item under the unique pointer.
+		// if they are not the same, write the item next to the right of the unique pointer.
+		if userIDs[uniqPointer] != userIDs[i] {
+			uniqPointer++
+			userIDs[uniqPointer] = userIDs[i]
+		}
+	}
+
+	return userIDs[:uniqPointer+1]
 }
 
 // SliceDifference 取 a 中有，而 b 中没有的
