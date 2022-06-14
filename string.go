@@ -2,7 +2,10 @@ package rice
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
+	"net"
+	"os"
 	"strconv"
 	"strings"
 
@@ -32,4 +35,18 @@ func RandInt(max int64) (int64, error) {
 	} else {
 		return result.Int64(), nil
 	}
+}
+
+func GetHostname() string {
+
+	hostname, _ := os.Hostname()
+
+	fmt.Printf("hostname: %v\n", hostname)
+
+	conn, _ := net.Dial("udp", "8.8.8.8:80")
+	defer conn.Close()
+
+	fmt.Printf("conn.LocalAddr().String(): %v\n", conn.LocalAddr().String())
+
+	return ""
 }

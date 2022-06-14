@@ -1,9 +1,11 @@
-package rice
+package tests
 
 import (
 	"reflect"
 	"sync"
 	"testing"
+
+	"github.com/woxingliu/rice"
 )
 
 func TestStrconvParseInt(t *testing.T) {
@@ -19,7 +21,7 @@ func TestStrconvParseInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := StrconvParseInt(tt.args.s); got != tt.want {
+			if got, _ := rice.StrconvParseInt(tt.args.s); got != tt.want {
 				t.Errorf("StrconvParseInt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -39,7 +41,7 @@ func TestStrconvFormatInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StrconvFormatInt(tt.args.i); got != tt.want {
+			if got := rice.StrconvFormatInt(tt.args.i); got != tt.want {
 				t.Errorf("StrconvFormatInt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -66,7 +68,7 @@ func TestStrconvParseFloat(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := StrconvParseFloat(tt.args.i); got != tt.want {
+			if got, _ := rice.StrconvParseFloat(tt.args.i); got != tt.want {
 				t.Errorf("StrconvParseFloat() = %v, want %v", got, tt.want)
 			}
 		})
@@ -90,7 +92,7 @@ func TestStringByte(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := StringByte(tt.args.s); !reflect.DeepEqual(got, tt.want) {
+			if got := rice.StringByte(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("StringByte() = %v, want %v", got, tt.want)
 			}
 		})
@@ -113,7 +115,7 @@ func TestSliceRemoveIndexUnOrder(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SliceRemoveIndexUnOrder(tt.args.s, tt.args.i); !reflect.DeepEqual(got, tt.want) {
+			if got := rice.SliceRemoveIndexUnOrder(tt.args.s, tt.args.i); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("SliceRemoveIndexUnOrder() = %v, want %v", got, tt.want)
 			}
 		})
@@ -126,7 +128,7 @@ func TestRandInt(t *testing.T) {
 	for i := 0; i < 10000; i++ {
 		wg.Add(1)
 		go func() {
-			a, err := RandInt(10)
+			a, err := rice.RandInt(10)
 			if err != nil {
 				t.Error(err)
 			}

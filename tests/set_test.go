@@ -1,8 +1,10 @@
-package rice
+package tests
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/woxingliu/rice"
 )
 
 func TestSliceIn(t *testing.T) {
@@ -20,7 +22,7 @@ func TestSliceIn(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SliceIn(tt.args.e, tt.args.s); got != tt.want {
+			if got := rice.SliceIn(tt.args.e, tt.args.s); got != tt.want {
 				t.Errorf("SliceIn() = %v, want %v", got, tt.want)
 			}
 		})
@@ -42,7 +44,7 @@ func TestSliceSet(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := RemoveDuplicates(tt.args.s1); !reflect.DeepEqual(got, tt.want) {
+			if got := rice.RemoveDuplicates(tt.args.s1); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("SliceSet() = %v, want %v", got, tt.want)
 			}
 		})

@@ -1,8 +1,9 @@
 // Package httpserver implements HTTP server.
-package httpserver
+package rice
 
 import (
 	"context"
+	"net"
 	"net/http"
 	"time"
 )
@@ -21,8 +22,8 @@ type Server struct {
 	shutdownTimeout time.Duration
 }
 
-// New -.
-func New(handler http.Handler, opts ...Option) *Server {
+// NewHttpServer -.
+func NewHttpServer(handler http.Handler, opts ...ServerOption) *Server {
 	httpServer := &http.Server{
 		Handler:      handler,
 		ReadTimeout:  _defaultReadTimeout,
@@ -64,4 +65,35 @@ func (s *Server) Shutdown() error {
 	defer cancel()
 
 	return s.server.Shutdown(ctx)
+}
+
+// ServerOption -.
+type ServerOption func(*Server)
+
+// Port -.
+func Port(port string) ServerOption {
+	return func(s *Server) {
+		s.server.Addr = net.JoinHostPort("", port)
+	}
+}
+
+// ReadTimeout -.
+func ReadTimeout(timeout time.Duration) ServerOption {
+	return func(s *Server) {
+		s.server.ReadTimeout = timeout
+	}
+}
+
+// WriteTimeout -.
+func WriteTimeout(timeout time.Duration) ServerOption {
+	return func(s *Server) {
+		s.server.WriteTimeout = timeout
+	}
+}
+
+// ShutdownTimeout -.
+func ShutdownTimeout(timeout time.Duration) ServerOption {
+	return func(s *Server) {
+		s.shutdownTimeout = timeout
+	}
 }

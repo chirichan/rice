@@ -1,10 +1,12 @@
-package rice
+package tests
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"testing"
+
+	"github.com/woxingliu/rice"
 )
 
 type User struct {
@@ -22,7 +24,7 @@ func (user *User) Unmarshal(data []byte) error {
 
 func TestNewRedis(t *testing.T) {
 
-	c, err := NewRedis("127.0.0.1:6379")
+	c, err := rice.NewRedis("127.0.0.1:6379")
 	if err != nil {
 		t.Error(err)
 	}
@@ -33,12 +35,12 @@ func TestNewRedis(t *testing.T) {
 		Name: "test123",
 	}
 
-	err = HSetStruct("user", "u8", user)
+	err = rice.HSetStruct("user", "u8", user)
 	if err != nil {
 		t.Error(err)
 	}
 
-	u2, _ := HGetStruct[User]("user", "u8")
+	u2, _ := rice.HGetStruct[User]("user", "u8")
 	fmt.Printf("u2: %v\n", u2)
 
 	// err = c.SetStruct("u1", &user)
@@ -69,7 +71,7 @@ func TestNewRedis(t *testing.T) {
 
 	// log.Println(user3.Name)
 
-	u, err := GetStruct[User]("u1")
+	u, err := rice.GetStruct[User]("u1")
 	if err != nil {
 		t.Error(err)
 	}

@@ -1,7 +1,9 @@
-package rice
+package tests
 
 import (
 	"testing"
+
+	"github.com/woxingliu/rice"
 )
 
 func TestFileStorage_Save(t *testing.T) {
@@ -11,12 +13,12 @@ func TestFileStorage_Save(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fs      *FileStorage
+		fs      *rice.FileStorage
 		args    args
 		wantErr bool
 	}{
-		{"1", NewFileStorage("", "20220519"), args{"test.txt", []byte("123456789")}, false},
-		{"2", NewFileStorage("", "20220620"), args{"test1.txt", []byte("89474984")}, false},
+		{"1", rice.NewFileStorage("", "20220519"), args{"test.txt", []byte("123456789")}, false},
+		{"2", rice.NewFileStorage("", "20220620"), args{"test1.txt", []byte("89474984")}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -34,12 +36,12 @@ func TestFileStorage_Append(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fs      *FileStorage
+		fs      *rice.FileStorage
 		args    args
 		wantErr bool
 	}{
-		{"1", NewFileStorage("", "20220519"), args{"test.json", []string{"2", "3"}}, false},
-		{"2", NewFileStorage("", "20220619"), args{"test.json", []string{"1", "2"}}, false},
+		{"1", rice.NewFileStorage("", "20220519"), args{"test.json", []string{"2", "3"}}, false},
+		{"2", rice.NewFileStorage("", "20220619"), args{"test.json", []string{"1", "2"}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
