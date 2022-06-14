@@ -25,13 +25,6 @@ var (
 	rdb       = &Redis{}
 )
 
-// func NewRedisCluster(addrs []string, opts ...RedisOption) {
-//
-// 	redis.NewClusterClient(&redis.ClusterOptions{
-// 		Addrs: addrs,
-// 	})
-// }
-
 func NewRedis(addr string, opts ...RedisOption) (*Redis, error) {
 
 	var err error
