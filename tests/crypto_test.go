@@ -35,7 +35,7 @@ func TestBCryptGenerateFromPassword(t *testing.T) {
 
 }
 
-// go test -run ^TestBCryptGenerateFromPassword$ github.com/woxingliu/rice -v -count=1
+// go test -run ^TestBCryptGenerateFromPassword$ github.com/woxingliu/rice/tests -v -count=1
 
 func TestCheckPassword(t *testing.T) {
 	type args struct {
@@ -62,6 +62,8 @@ func TestCheckPassword(t *testing.T) {
 		})
 	}
 }
+
+// go test -timeout 30s -run ^TestCheckPassword$ github.com/woxingliu/rice/tests -v -count=1
 
 func TestAESEncrypt(t *testing.T) {
 	type args struct {

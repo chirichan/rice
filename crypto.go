@@ -31,32 +31,8 @@ func CheckPassword(pwd string) error {
 		return errors.New("至少16位")
 	}
 
-	hasLowerLettersFunc := func(s rune) bool {
-		for _, i := range LowerLetters {
-			if i == s {
-				return true
-			}
-		}
-		return false
-	}
-	hasUpperLettersFunc := func(s rune) bool {
-		for _, i := range UpperLetters {
-			if i == s {
-				return true
-			}
-		}
-		return false
-	}
-	hasDigitsFunc := func(s rune) bool {
-		for _, i := range Digits {
-			if i == s {
-				return true
-			}
-		}
-		return false
-	}
-	hasSymbolsFunc := func(s rune) bool {
-		for _, i := range Symbols {
+	hasStrFunc := func(s rune, str string) bool {
+		for _, i := range str {
 			if i == s {
 				return true
 			}
@@ -74,13 +50,13 @@ func CheckPassword(pwd string) error {
 	for _, v := range pwd {
 		pwdmap[v] = struct{}{}
 
-		if hasLowerLettersFunc(v) {
+		if hasStrFunc(v, LowerLetters) {
 			lowermap[v] = struct{}{}
-		} else if hasUpperLettersFunc(v) {
+		} else if hasStrFunc(v, UpperLetters) {
 			uppermap[v] = struct{}{}
-		} else if hasDigitsFunc(v) {
+		} else if hasStrFunc(v, Digits) {
 			digitsmap[v] = struct{}{}
-		} else if hasSymbolsFunc(v) {
+		} else if hasStrFunc(v, Symbols) {
 			symbolsmap[v] = struct{}{}
 		} else {
 			othermap[v] = struct{}{}
