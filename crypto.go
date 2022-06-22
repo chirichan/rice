@@ -12,15 +12,113 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	// LowerLetters is the list of lowercase letters.
+	LowerLetters = "abcdefghijklmnopqrstuvwxyz"
+
+	// UpperLetters is the list of uppercase letters.
+	UpperLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	// Digits is the list of permitted digits.
+	Digits = "0123456789"
+
+	// Symbols is the list of symbols.
+	Symbols = "~!@#$%^&*()_+`-={}|[]\\:\"<>?,./"
+)
+
+func CheckPassword(pwd string) error {
+	if len(pwd) < 16 {
+		return errors.New("至少16位")
+	}
+
+	hasLowerLettersFunc := func(s rune) bool {
+		for _, i := range LowerLetters {
+			if i == s {
+				return true
+			}
+		}
+		return false
+	}
+	hasUpperLettersFunc := func(s rune) bool {
+		for _, i := range UpperLetters {
+			if i == s {
+				return true
+			}
+		}
+		return false
+	}
+	hasDigitsFunc := func(s rune) bool {
+		for _, i := range Digits {
+			if i == s {
+				return true
+			}
+		}
+		return false
+	}
+	hasSymbolsFunc := func(s rune) bool {
+		for _, i := range Symbols {
+			if i == s {
+				return true
+			}
+		}
+		return false
+	}
+
+	var pwdmap, lowermap, uppermap, digitsmap, symbolsmap, othermap = make(map[rune]struct{}),
+		make(map[rune]struct{}),
+		make(map[rune]struct{}),
+		make(map[rune]struct{}),
+		make(map[rune]struct{}),
+		make(map[rune]struct{})
+
+	for _, v := range pwd {
+		pwdmap[v] = struct{}{}
+
+		if hasLowerLettersFunc(v) {
+			lowermap[v] = struct{}{}
+		} else if hasUpperLettersFunc(v) {
+			uppermap[v] = struct{}{}
+		} else if hasDigitsFunc(v) {
+			digitsmap[v] = struct{}{}
+		} else if hasSymbolsFunc(v) {
+			symbolsmap[v] = struct{}{}
+		} else {
+			othermap[v] = struct{}{}
+		}
+	}
+
+	if len(pwdmap) < 10 {
+		return errors.New("去重后至少10位")
+	}
+
+	if len(lowermap) < 4 {
+		return errors.New("小写字母至少4个")
+	}
+
+	if len(uppermap) < 4 {
+		return errors.New("大写字母至少4个")
+	}
+
+	if len(digitsmap) > 6 {
+		return errors.New("数字不能超过6个")
+	}
+
+	if len(symbolsmap) < 4 {
+		return errors.New("特殊符号至少4个")
+	}
+
+	return nil
+}
+
 // BCryptGenerateFromPassword generate hash from password
 func BCryptGenerateFromPassword(pwd string) (string, error) {
-	password, err := bcrypt.GenerateFromPassword(StringByte(pwd), bcrypt.DefaultCost)
+	password, err := bcrypt.GenerateFromPassword(StringByteUnsafe(pwd), 14)
 	return ByteString(password), err
 }
 
 // BCryptCompareHashAndPassword true or false
 func BCryptCompareHashAndPassword(pwd, hash string) bool {
-	return bcrypt.CompareHashAndPassword(StringByte(pwd), StringByte(hash)) == nil
+	return bcrypt.CompareHashAndPassword(StringByteUnsafe(hash), StringByteUnsafe(pwd)) == nil
 }
 
 func AESEncrypt(key []byte, s string) (string, error) {

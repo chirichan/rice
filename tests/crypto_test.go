@@ -2,11 +2,66 @@ package tests
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/woxingliu/rice"
 )
+
+func TestBCryptGenerateFromPassword(t *testing.T) {
+
+	pwd := "a😀"
+	var wg sync.WaitGroup
+
+	for i := 0; i < 10; i++ {
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			s, err := rice.BCryptGenerateFromPassword(pwd)
+
+			if err != nil {
+				t.Error(err)
+			}
+
+			t.Log(s, rice.BCryptCompareHashAndPassword(pwd, s))
+
+		}()
+
+	}
+
+	wg.Wait()
+
+}
+
+// go test -run ^TestBCryptGenerateFromPassword$ github.com/woxingliu/rice -v -count=1
+
+func TestCheckPassword(t *testing.T) {
+	type args struct {
+		pwd string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+		{"1", args{"123456abc123456abc123456abc"}, false},
+		{"2", args{"abcdef123456ADLDFIO&*^^%)"}, false},
+		{"3", args{"aeafhrtyrrhjghdYUOOJJ^)&%$#$#$&*())ha😀🆒😀🆒😀🆒😀🆒wr#$#$"}, false},
+		{"4", args{"%%$"}, false},
+		{"5", args{"GGfggsd"}, false},
+		{"6", args{"ERRETt4645"}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := rice.CheckPassword(tt.args.pwd); (err != nil) != tt.wantErr {
+				t.Errorf("CheckPassword() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
 
 func TestAESEncrypt(t *testing.T) {
 	type args struct {
