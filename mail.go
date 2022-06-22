@@ -6,6 +6,12 @@ import (
 	"strings"
 )
 
+const (
+	GmailSmtp    = "smtp.gmail.com"
+	GmailTLSPort = 587
+	GmailSSLPort = 465
+)
+
 type Mailer interface {
 	SendMail(subject, body string, to []string) error
 }
@@ -17,11 +23,11 @@ type Mail struct {
 	From string
 }
 
-func NewMail(auth smtp.Auth, username, password, host, port string) *Mail {
+func NewMail(auth smtp.Auth, from, host string, port int) Mailer {
 	return &Mail{
 		Auth: auth,
-		Addr: fmt.Sprintf("%s:%s", host, port),
-		From: username,
+		Addr: fmt.Sprintf("%s:%d", host, port),
+		From: from,
 	}
 }
 
@@ -30,4 +36,8 @@ func (m *Mail) SendMail(subject, body string, to []string) error {
 	msg := fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s\r\n", tos, subject, body)
 
 	return smtp.SendMail(m.Addr, m.Auth, m.From, to, StringByteUnsafe(msg))
+}
+
+func NewGmailAuth(username, password string) smtp.Auth {
+	return smtp.PlainAuth("", username, password, GmailSmtp)
 }
