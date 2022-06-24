@@ -19,14 +19,44 @@ func init() {
 	idgen.SetIdGenerator(options)
 }
 
+type Ider interface {
+	NextInt64Id() int64
+	NextStringId() string
+}
+
+type YitId struct{}
+type UUID struct{}
+type XId struct{}
+
+func NewYitId() Ider { return &YitId{} }
+func NewUUID() Ider  { return &UUID{} }
+func NewXId() Ider   { return &XId{} }
+
+func (n *YitId) NextInt64Id() int64 {
+	return idgen.NextId()
+}
+
+func (n *YitId) NextStringId() string {
+	return strconv.FormatInt(idgen.NextId(), 10)
+}
+
+func (u *UUID) NextStringId() string {
+	return strings.ReplaceAll(uuid.NewString(), "-", "")
+}
+
+func (u *UUID) NextInt64Id() int64 {
+	panic("impl me")
+}
+
+func (x *XId) NextStringId() string {
+	return xid.New().String()
+}
+
+func (x *XId) NextInt64Id() int64 {
+	panic("impl me")
+}
+
 func NextStringId() string { return strconv.FormatInt(idgen.NextId(), 10) }
-
-func NextInt64Id() int64 { return idgen.NextId() }
-
-func XidNewString() string { return xid.New().String() }
-
-// UUIDNewString creates a new random UUID
-func UUIDNewString() string { return strings.ReplaceAll(uuid.NewString(), "-", "") }
 
 // RandInt 生成一个真随机数
 func RandInt(max int64) (int64, error) {

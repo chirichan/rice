@@ -53,3 +53,14 @@ func BetweenDays(startTime, endTime time.Time) int64 {
 	}
 	return days
 }
+
+// TimeCompare 如果 t1>t2, return true, 如果 t1 <= t2, return false
+func TimeCompare(t1, t2 time.Time) bool {
+
+	if t1.After(t2) {
+		return true
+	} else {
+		return false
+	}
+
+}
