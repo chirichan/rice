@@ -299,7 +299,13 @@ const (
 	OFB
 )
 
-type AES interface {
+type AESCrypter interface {
 	Decrypter()
 	Encrypter()
 }
+
+type CBCCrypt struct{}
+type CFBCrypt struct{}
+type CTRCrypt struct{}
+type GCMCrypt struct{}
+type OFBCrypt struct{}

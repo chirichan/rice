@@ -26,6 +26,25 @@ func TimeUnixFormatDatetime(timestamp int64) string {
 	return time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
 }
 
+func TodayZeroTime() time.Time {
+	now := time.Now()
+	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
+}
+
+func TodayZeroTimestamp() int64 {
+	now := time.Now()
+	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).Unix()
+}
+
+func ZeroTime(tm time.Time) time.Time {
+	return time.Date(tm.Year(), tm.Month(), tm.Day(), 0, 0, 0, 0, time.Local)
+}
+
+func ZeroTimestamp(ts int64) int64 {
+	tm := time.Unix(ts, 0)
+	return time.Date(tm.Year(), tm.Month(), tm.Day(), 0, 0, 0, 0, time.Local).Unix()
+}
+
 // HMCompare 如果 1 > 2 return true
 // 小时和分钟 比较大小
 func HMCompare(h1, m1, h2, m2 int) bool {

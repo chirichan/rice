@@ -7,6 +7,54 @@ import (
 	"github.com/woxingliu/rice"
 )
 
+func TestSliceDifferenceBoth(t *testing.T) {
+	type args struct {
+		slice1 []string
+		slice2 []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{"1", args{[]string{"1"}, []string{"2"}}, []string{"1", "2"}},
+		{"2", args{[]string{}, []string{"2"}}, []string{"2"}},
+		{"3", args{[]string{"1"}, []string{}}, []string{"1"}},
+		{"4", args{[]string{"1", "1", "2", "3"}, []string{"0", "2", "3", "4"}}, []string{"1", "1", "0", "4"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := rice.SliceDifferenceBoth(tt.args.slice1, tt.args.slice2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("SliceDifferenceBoth() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSliceDifference(t *testing.T) {
+	type args struct {
+		a []string
+		b []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{"1", args{[]string{"1"}, []string{"2"}}, []string{"1"}},
+		{"2", args{[]string{}, []string{"2"}}, nil},
+		{"3", args{[]string{"1"}, []string{}}, []string{"1"}},
+		{"4", args{[]string{"1", "1", "2", "3"}, []string{"0", "2", "3", "4"}}, []string{"1", "1"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := rice.SliceDifference(tt.args.a, tt.args.b); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("SliceDifference() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSliceIn(t *testing.T) {
 	type args struct {
 		e int

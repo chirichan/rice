@@ -82,6 +82,35 @@ func SliceDifference[T comparable](a, b []T) []T {
 	return diff
 }
 
+// SliceDifferenceBoth 取 slice1, slice2 的差集
+func SliceDifferenceBoth[T comparable](slice1, slice2 []T) []T {
+	var diff []T
+
+	// Loop two times, first to find slice1 strings not in slice2,
+	// second loop to find slice2 strings not in slice1
+	for i := 0; i < 2; i++ {
+		for _, s1 := range slice1 {
+			found := false
+			for _, s2 := range slice2 {
+				if s1 == s2 {
+					found = true
+					break
+				}
+			}
+			// String not found. We add it to return slice
+			if !found {
+				diff = append(diff, s1)
+			}
+		}
+		// Swap the slices, only if it was the first loop
+		if i == 0 {
+			slice1, slice2 = slice2, slice1
+		}
+	}
+
+	return diff
+}
+
 // SliceIntersection 两个 slice 的交集
 func SliceIntersection[T comparable](s1, s2 []T) (inter []T) {
 	hash := make(map[T]bool)
@@ -178,8 +207,8 @@ func In[T comparable](e T, s []T) bool {
 	return false
 }
 
-// Reverse 反转 slice
-func Reverse[T any](slice []T) {
+// SliceReverse 反转 slice
+func SliceReverse[T any](slice []T) {
 	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
 		slice[i], slice[j] = slice[j], slice[i]
 	}

@@ -2,9 +2,10 @@ package rice
 
 import (
 	"encoding/json"
+	"os"
+
 	"github.com/BurntSushi/toml"
 	"gopkg.in/yaml.v2"
-	"os"
 )
 
 var (
@@ -27,7 +28,7 @@ func NewYamlUnmarshal() UnmarshalConfiger { return &YamlUnmarshal{} }
 func NewTomlUnmarshal() UnmarshalConfiger { return &TomlUnmarshal{} }
 
 func (j *JsonUnmarshal) ReadConfig(p []byte, v any) error {
-	return json.Unmarshal(p, &v)
+	return json.Unmarshal(p, v)
 }
 
 func (j *JsonUnmarshal) ReadConfigFromFile(path string, v any) error {
@@ -40,7 +41,7 @@ func (j *JsonUnmarshal) ReadConfigFromFile(path string, v any) error {
 }
 
 func (y *YamlUnmarshal) ReadConfig(p []byte, v any) error {
-	return yaml.Unmarshal(p, &v)
+	return yaml.Unmarshal(p, v)
 }
 
 func (y *YamlUnmarshal) ReadConfigFromFile(path string, v any) error {
@@ -53,7 +54,7 @@ func (y *YamlUnmarshal) ReadConfigFromFile(path string, v any) error {
 }
 
 func (t *TomlUnmarshal) ReadConfig(p []byte, v any) error {
-	return toml.Unmarshal(p, &v)
+	return toml.Unmarshal(p, v)
 }
 
 func (t *TomlUnmarshal) ReadConfigFromFile(path string, v any) error {
