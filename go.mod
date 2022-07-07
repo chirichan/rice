@@ -11,7 +11,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/xid v1.4.0
 	github.com/rs/zerolog v1.27.0
-	github.com/streadway/amqp v1.0.0
 	github.com/yitter/idgenerator-go v1.2.2
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0
