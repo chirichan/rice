@@ -1,7 +1,11 @@
 package tests
 
 import (
+	"crypto/aes"
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
+	"io"
 	"sync"
 	"testing"
 	"time"
@@ -65,85 +69,6 @@ func TestCheckPassword(t *testing.T) {
 
 // go test -timeout 30s -run ^TestCheckPassword$ github.com/woxingliu/rice/tests -v -count=1
 
-func TestAESEncrypt(t *testing.T) {
-	type args struct {
-		key []byte
-		s   string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := rice.AESEncrypt(tt.args.key, tt.args.s)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("AESEncrypt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("AESEncrypt() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestAESDecrypt(t *testing.T) {
-	type args struct {
-		key []byte
-		s   string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := rice.AESDecrypt(tt.args.key, tt.args.s)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("AESDecrypt() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("AESDecrypt() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestAESNewGCMEncrypt(t *testing.T) {
-
-	keystring := "972ec8dd995743d981417981ac2f30db"
-
-	s, err := rice.AESNewGCMEncrypt(keystring, "hello i am neko")
-	if err != nil {
-		t.Error(err)
-	}
-	t.Error(s)
-}
-
-func TestAESNewGCMDecrypt(t *testing.T) {
-
-	keystring := "972ec8dd995743d981417981ac2f30db"
-	nonceString := "e8ce8ffdbb0a710ad3999ba2"
-	ciphertext := "f116733f86881a30d8a84be3c67e07192e93f121d8d1c9326456a8bb3843b1"
-
-	s, err := rice.AESNewGCMDecrypt(keystring, nonceString, ciphertext)
-	if err != nil {
-		t.Error(err)
-	}
-
-	t.Error(s)
-}
-
 func TestLocation(t *testing.T) {
 
 	l, err := time.LoadLocation("Asia/Shanghai")
@@ -168,4 +93,53 @@ func TestLocation(t *testing.T) {
 
 	fmt.Printf("time.Now().Local(): %v\n", time.Now().Local())
 
+}
+
+func TestCTREncrypt(t *testing.T) {
+
+	iv := make([]byte, aes.BlockSize)
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+
+	encodeToString := hex.EncodeToString(iv)
+
+	t.Log(encodeToString)
+
+	key := encodeToString
+	plaintext := "l"
+
+	a := rice.NewCTRCrypt()
+
+	s, err := a.Encrypt(key, plaintext)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(s)
+
+	s2, _ := a.Decrypt(key, s)
+
+	t.Log(s2)
+
+	generateFromPassword, _ := rice.BCryptGenerateFromPassword(encodeToString)
+
+	t.Log(generateFromPassword)
+}
+
+func TestFullPassword(t *testing.T) {
+
+	for i := 0; i < 200; i++ {
+		s, err := rice.FullPassword(4, 32)
+		if err != nil {
+			t.Error(err)
+		}
+
+		if s == "" {
+			t.Log("null")
+		} else {
+			t.Log(s)
+		}
+
+	}
 }
