@@ -2,9 +2,13 @@ package rice
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
+
+	"google.golang.org/grpc"
 )
 
 const (
@@ -94,5 +98,26 @@ func WriteTimeout(timeout time.Duration) ServerOption {
 func ShutdownTimeout(timeout time.Duration) ServerOption {
 	return func(s *Server) {
 		s.shutdownTimeout = timeout
+	}
+}
+
+// NewGrpcServer -.
+func NewGrpcServer(ctx context.Context, port string, server *grpc.Server) {
+
+	if l, err := net.Listen("tcp", fmt.Sprintf(":%s", port)); err != nil {
+		log.Fatalf("error in listening on port %v, %v", port, err)
+	} else {
+
+		go func() {
+			<-ctx.Done()
+			err := l.Close()
+			if err != nil {
+				log.Fatalf("Failed to close gRPC server :%v, %v", port, err)
+			}
+		}()
+
+		if err := server.Serve(l); err != nil {
+			log.Fatalf("unable to start server, %v", err)
+		}
 	}
 }
