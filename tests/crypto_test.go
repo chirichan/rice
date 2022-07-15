@@ -102,6 +102,9 @@ func TestCTREncrypt(t *testing.T) {
 		panic(err)
 	}
 
+	byteUnsafe := rice.StringByteUnsafe("u.4%,:oV0xyg8poZAO$?d6KYU0=S?/1,")
+	t.Log(len(byteUnsafe))
+
 	encodeToString := hex.EncodeToString(iv)
 
 	t.Log(encodeToString)

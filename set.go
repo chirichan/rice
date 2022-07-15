@@ -213,3 +213,22 @@ func SliceReverse[T any](slice []T) {
 		slice[i], slice[j] = slice[j], slice[i]
 	}
 }
+
+// Pageination 切片分页
+func Pageination[T any](page, pageSize int, s []T) []T {
+	if page <= 0 {
+		page = 1
+	}
+	if len(s) >= pageSize*(page-1) {
+		if pageSize*page <= len(s) {
+			s = s[pageSize*(page-1) : pageSize*page]
+		} else if page-1 == 0 {
+			s = s[:]
+		} else if pageSize*page > len(s) {
+			s = s[pageSize*(page-1):]
+		}
+		return s
+	} else {
+		return s
+	}
+}
