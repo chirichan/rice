@@ -22,6 +22,16 @@ func (user *User) Unmarshal(data []byte) error {
 	return json.Unmarshal(data, user)
 }
 
+func TestNewRedis2(t *testing.T) {
+
+	c, err := rice.NewRedis("127.0.0.1:6379")
+	if err != nil {
+		t.Error(err)
+	}
+	t.Error(c.Ping(context.Background()).Result())
+
+}
+
 func TestNewRedis(t *testing.T) {
 
 	c, err := rice.NewRedis("127.0.0.1:6379")
