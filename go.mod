@@ -1,4 +1,4 @@
-module github.com/woxingliu/rice
+module github.com/latext/rice
 
 go 1.18
 

@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/woxingliu/rice"
+	"github.com/latext/rice"
 )
 
-// go test -v -timeout 30s -run ^TestCronRun$ github.com/woxingliu/rice
+// go test -v -timeout 30s -run ^TestCronRun$ github.com/latext/rice
 func TestCronRun(t *testing.T) {
 
 	withTimeout, cancelFunc := context.WithTimeout(context.Background(), 10*time.Second)

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/woxingliu/rice"
+	"github.com/latext/rice"
 )
 
 func TestStrconvParseInt(t *testing.T) {

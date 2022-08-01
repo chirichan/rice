@@ -4,7 +4,7 @@ on:
   push:
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
 
@@ -20,5 +20,5 @@ jobs:
 
     - name: Publish package
       run: |
-        GOPROXY=proxy.golang.org go list -m github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
-        curl -X POST https://pkg.go.dev/fetch/github.com/woxingliu/rice@${GITHUB_REF#refs/*/}
+        GOPROXY=proxy.golang.org go list -m github.com/latext/rice@${GITHUB_REF#refs/*/}
+        curl -X POST https://pkg.go.dev/fetch/github.com/latext/rice@${GITHUB_REF#refs/*/}

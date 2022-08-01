@@ -1,7 +1,7 @@
 # rice
 
 ```go
-import "github.com/woxingliu/rice"
+import "github.com/latext/rice"
 ```
 
 ```bash
@@ -53,6 +53,10 @@ type Repo struct {
 
 func NewRepo(db Pretty) Repo {
 	return Repo{Pretty: db}
+}
+
+func (r Repo) WithTx(tx Pretty) Repo {
+	return Repo{Pretty: tx}
 }
 
 func (r Repo) Create() error { return nil }
