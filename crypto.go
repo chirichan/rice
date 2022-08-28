@@ -99,6 +99,10 @@ func FullPassword(level, length int) (string, error) {
 		return "", errors.New("length too long")
 	}
 
+	if length < 1 || length > 4 {
+		return "", errors.New("level must range 1-4")
+	}
+
 	var (
 		result string
 		read   = rand.Reader

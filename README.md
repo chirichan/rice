@@ -103,3 +103,8 @@ func UseCaseTx() error {
 }
 ```
 
+## Install
+
+```shell
+go install github.com/latext/rice/cmd/pwdgen@latest
+```
