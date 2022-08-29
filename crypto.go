@@ -93,14 +93,14 @@ func SetLevel(level, length int) FullPasswordConf {
 
 func FullPassword(level, length int) (string, error) {
 
+	if level < 1 || level > 4 {
+		return "", errors.New("level must range 1-4")
+	}
+
 	if length < 6 {
 		return "", errors.New("length must >= 6")
 	} else if length > 2048 {
 		return "", errors.New("length too long")
-	}
-
-	if length < 1 || length > 4 {
-		return "", errors.New("level must range 1-4")
 	}
 
 	var (
