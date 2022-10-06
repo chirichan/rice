@@ -1,4 +1,4 @@
-module github.com/latext/rice
+module github.com/chirichan/rice
 
 go 1.18
 

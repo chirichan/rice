@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/latext/rice"
+	"github.com/chirichan/rice"
 )
 
 type User struct {

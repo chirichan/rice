@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/latext/rice"
+	"github.com/chirichan/rice"
 )
 
 func TestSliceDifferenceBoth(t *testing.T) {

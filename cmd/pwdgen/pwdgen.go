@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/atotto/clipboard"
-	"github.com/latext/rice"
+	"github.com/chirichan/rice"
 )
 
 var (

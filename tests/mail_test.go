@@ -3,7 +3,7 @@ package tests
 import (
 	"testing"
 
-	"github.com/latext/rice"
+	"github.com/chirichan/rice"
 )
 
 func TestMail_SendMail(t *testing.T) {

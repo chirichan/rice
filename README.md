@@ -1,7 +1,7 @@
 # rice
 
 ```go
-import "github.com/latext/rice"
+import "github.com/chirichan/rice"
 ```
 
 ```bash
@@ -106,5 +106,5 @@ func UseCaseTx() error {
 ## Install
 
 ```shell
-go install github.com/latext/rice/cmd/pwdgen@latest
+go install github.com/chirichan/rice/cmd/pwdgen@latest
 ```

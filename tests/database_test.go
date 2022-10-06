@@ -4,7 +4,7 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/latext/rice"
+	"github.com/chirichan/rice"
 )
 
 func TestNewMaria(t *testing.T) {
