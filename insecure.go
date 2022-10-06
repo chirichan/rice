@@ -17,11 +17,11 @@ func CertInit(certPEM, keyPEM []byte) error {
 	var err error
 	Cert, err = tls.X509KeyPair(certPEM, keyPEM)
 	if err != nil {
-		return fmt.Errorf("Failed to parse key pair: %w", err)
+		return fmt.Errorf("failed to parse key pair: %w", err)
 	}
 	Cert.Leaf, err = x509.ParseCertificate(Cert.Certificate[0])
 	if err != nil {
-		return fmt.Errorf("Failed to parse certificate: %w", err)
+		return fmt.Errorf("failed to parse certificate: %w", err)
 	}
 
 	CertPool = x509.NewCertPool()

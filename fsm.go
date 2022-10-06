@@ -152,7 +152,7 @@ func NewFSM(initState StateType, events []EventDesc, callbacks map[CallbackKey]C
 type FSMManage struct{}
 
 var (
-	InvalidTransition = errors.New("invalid transition")
+	ErrInvalidTransition = errors.New("invalid transition")
 )
 
 // InvalidEventError is returned by FSM.Event() when the event cannot be called

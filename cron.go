@@ -143,10 +143,8 @@ func CronRun(ctx context.Context, corn string, task ...func()) error {
 
 	c.Start()
 
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+	<-ctx.Done()
+	return nil
 }
 
 func CronRunM(ctx context.Context, corn string, task ...func()) error {
@@ -163,8 +161,6 @@ func CronRunM(ctx context.Context, corn string, task ...func()) error {
 
 	c.Start()
 
-	select {
-	case <-ctx.Done():
-		return nil
-	}
+	<-ctx.Done()
+	return nil
 }
