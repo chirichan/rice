@@ -1,6 +1,6 @@
 module github.com/chirichan/rice
 
-go 1.18
+go 1.19
 
 require (
 	github.com/BurntSushi/toml v1.1.0
@@ -14,7 +14,7 @@ require (
 	github.com/yitter/idgenerator-go v1.3.1
 	google.golang.org/grpc v1.48.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
 )
 
 require (

@@ -14,10 +14,14 @@ import (
 	"github.com/yitter/idgenerator-go/idgen"
 )
 
-func init() {
-	options := idgen.NewIdGeneratorOptions(1)
+func InitYitterID(workID uint16) {
+	options := idgen.NewIdGeneratorOptions(workID)
 	idgen.SetIdGenerator(options)
 }
+
+type YitterID struct{}
+
+
 
 type Ider interface {
 	NextInt64Id() int64

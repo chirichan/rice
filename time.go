@@ -2,28 +2,33 @@ package rice
 
 import "time"
 
+const (
+	DateTime = "2006-01-02 15:04:05"
+	Date     = "2006-01-02"
+)
+
 // TimeFormatDate time to date
-func TimeFormatDate(tm time.Time) string { return tm.Format("2006-01-02") }
+func TimeFormatDate(tm time.Time) string { return tm.Format(Date) }
 
 // TimeParseDate string date to time date
-func TimeParseDate(date string) (time.Time, error) { return time.Parse("2006-01-02", date) }
+func TimeParseDate(date string) (time.Time, error) { return time.Parse(Date, date) }
 
 func TimeParseDatetime(datetime string) (time.Time, error) {
-	return time.Parse("2006-01-02 15:04:05", datetime)
+	return time.Parse(DateTime, datetime)
 }
 
-// TimeNowFormat time.Time to "2006-01-02 15:04:05"
-func TimeNowFormat() string { return time.Now().Format("2006-01-02 15:04:05") }
+// TimeNowFormat time.Time to DateTime
+func TimeNowFormat() string { return time.Now().Format(DateTime) }
 
-// TimeFormat time.Time to "2006-01-02 15:04:05"
-func TimeFormat(tm time.Time) string { return tm.Format("2006-01-02 15:04:05") }
+// TimeFormat time.Time to DateTime
+func TimeFormat(tm time.Time) string { return tm.Format(DateTime) }
 
 // TimeUnixFormatDate timestamp to date
-func TimeUnixFormatDate(timestamp int64) string { return time.Unix(timestamp, 0).Format("2006-01-02") }
+func TimeUnixFormatDate(timestamp int64) string { return time.Unix(timestamp, 0).Format(Date) }
 
 // TimeUnixFormatDatetime time to datetime
 func TimeUnixFormatDatetime(timestamp int64) string {
-	return time.Unix(timestamp, 0).Format("2006-01-02 15:04:05")
+	return time.Unix(timestamp, 0).Format(DateTime)
 }
 
 func TodayZeroTime() time.Time {
