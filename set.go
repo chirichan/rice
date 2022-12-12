@@ -128,7 +128,7 @@ func SliceIntersection[T comparable](s1, s2 []T) (inter []T) {
 	return
 }
 
-//Remove dups from slice.
+// Remove dups from slice.
 func removeDups[T comparable](elements []T) (nodups []T) {
 	encountered := make(map[T]bool)
 	for _, element := range elements {
@@ -234,28 +234,28 @@ func Pageination[T any](page, pageSize int, s []T) []T {
 }
 
 // Filter filter one slice
-func Filter[T any](objs []T, filter func(obj T) bool) []T {
-	res := make([]T, 0, len(objs))
-	for i := range objs {
-		ok := filter(objs[i])
-		if ok {
-			res = append(res, objs[i])
-		}
-	}
-	return res
-}
+//func Filter[T any](objs []T, filter func(obj T) bool) []T {
+//	res := make([]T, 0, len(objs))
+//	for i := range objs {
+//		ok := filter(objs[i])
+//		if ok {
+//			res = append(res, objs[i])
+//		}
+//	}
+//	return res
+//}
 
 // Map one slice
-func Map[T any, K any](objs []T, mapper func(obj T) ([]K, bool)) []K {
-	res := make([]K, 0, len(objs))
-	for i := range objs {
-		others, ok := mapper(objs[i])
-		if ok {
-			res = append(res, others...)
-		}
-	}
-	return res
-}
+//func Map[T any, K any](objs []T, mapper func(obj T) ([]K, bool)) []K {
+//	res := make([]K, 0, len(objs))
+//	for i := range objs {
+//		others, ok := mapper(objs[i])
+//		if ok {
+//			res = append(res, others...)
+//		}
+//	}
+//	return res
+//}
 
 // First make return first for slice
 func First[T any](objs []T) (T, bool) {
@@ -263,4 +263,104 @@ func First[T any](objs []T) (T, bool) {
 		return objs[0], true
 	}
 	return *new(T), false
+}
+
+type Iterator[T any] interface {
+	Next() bool
+	Value() T
+}
+
+type SliceIterator[T any] struct {
+	Elements []T
+	value    T
+	index    int
+}
+
+// NewSliceIterator Create an iterator over the slice xs
+func NewSliceIterator[T any](xs []T) Iterator[T] {
+	return &SliceIterator[T]{
+		Elements: xs,
+	}
+}
+
+// Next Move to next value in collection
+func (iter *SliceIterator[T]) Next() bool {
+	if iter.index < len(iter.Elements) {
+		iter.value = iter.Elements[iter.index]
+		iter.index += 1
+		return true
+	}
+
+	return false
+}
+
+// Value Get current element
+func (iter *SliceIterator[T]) Value() T {
+	return iter.value
+}
+
+type mapIterator[T any] struct {
+	source Iterator[T]
+	mapper func(T) T
+}
+
+// Next advance to next element
+func (iter *mapIterator[T]) Next() bool {
+	return iter.source.Next()
+}
+
+func (iter *mapIterator[T]) Value() T {
+	value := iter.source.Value()
+	return iter.mapper(value)
+}
+
+func Map[T any](iter Iterator[T], f func(T) T) Iterator[T] {
+	return &mapIterator[T]{
+		iter, f,
+	}
+}
+
+type filterIterator[T any] struct {
+	source Iterator[T]
+	pred   func(T) bool
+}
+
+func (iter *filterIterator[T]) Next() bool {
+	for iter.source.Next() {
+		if iter.pred(iter.source.Value()) {
+			return true
+		}
+	}
+	return false
+}
+
+func (iter *filterIterator[T]) Value() T {
+	return iter.source.Value()
+}
+
+func Filter[T any](iter Iterator[T], pred func(T) bool) Iterator[T] {
+	return &filterIterator[T]{
+		iter, pred,
+	}
+}
+
+func Collect[T any](iter Iterator[T]) []T {
+	var xs []T
+
+	for iter.Next() {
+		xs = append(xs, iter.Value())
+	}
+
+	return xs
+}
+
+type Reducer[T, V any] func(accum T, value V) T
+
+// Reduce values iterated over to a single value
+func Reduce[T, V any](iter Iterator[V], f Reducer[T, V]) T {
+	var accum T
+	for iter.Next() {
+		accum = f(accum, iter.Value())
+	}
+	return accum
 }
