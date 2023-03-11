@@ -13,7 +13,7 @@ var (
 	CertPool *x509.CertPool
 )
 
-func CertInit(certPEM, keyPEM []byte) error {
+func InitCert(certPEM, keyPEM []byte) error {
 	var err error
 	Cert, err = tls.X509KeyPair(certPEM, keyPEM)
 	if err != nil {

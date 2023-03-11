@@ -22,19 +22,14 @@ func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
 
 // RemoveDuplicates slice 去重
 func RemoveDuplicates[T comparable](s1 []T) []T {
-
 	m1 := make(map[T]struct{})
-
 	for _, v := range s1 {
 		m1[v] = struct{}{}
 	}
-
 	s2 := make([]T, 0)
-
 	for k := range m1 {
 		s2 = append(s2, k)
 	}
-
 	return s2
 }
 
@@ -142,7 +137,6 @@ func removeDups[T comparable](elements []T) (nodups []T) {
 
 // TimeExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
 func TimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anotherEndTime time.Time) bool {
-
 	if anotherStartTime.After(endTime) || anotherEndTime.Before(startTime) {
 		return false
 	} else {
@@ -152,7 +146,6 @@ func TimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anoth
 
 // TimestampExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
 func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anotherEndTime int64) bool {
-
 	if endTime < anotherStartTime || startTime > anotherEndTime {
 		return false
 	} else {
@@ -160,47 +153,31 @@ func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anot
 	}
 }
 
-// SliceIn e 是否在 s 中
-func SliceIn[T comparable](e T, s []T) bool {
-	for _, v := range s {
-		if v == e {
-			return true
-		}
-	}
-	return false
-}
-
 // MaxNumber booleans, numbers, strings, pointers, channels, arrays
 func MaxNumber[T Numbers](n ...T) T {
-
 	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
-
 	return n[len(n)-1]
 }
 
 func MinNumber[T Numbers](n ...T) T {
-
 	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
-
 	return n[0]
 }
 
 // NotIn e 不在 s 中吗？ true 不在， false 在
-func NotIn[T comparable](e T, s []T) bool {
-
-	for _, id := range s {
-		if e == id {
+func NotIn[T comparable](e T, items []T) bool {
+	for _, item := range items {
+		if e == item {
 			return false
 		}
 	}
 	return true
 }
 
-// In e 在 s 中吗？ true 在，false 不在
-func In[T comparable](e T, s []T) bool {
-
-	for _, id := range s {
-		if e == id {
+// In e 在 items 中吗？ true 在，false 不在
+func In[T comparable](e T, items []T) bool {
+	for _, item := range items {
+		if e == item {
 			return true
 		}
 	}
