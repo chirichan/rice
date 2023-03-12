@@ -9,66 +9,72 @@ type Numbers interface {
 	uint8 | uint16 | uint32 | uint64 | int8 | int16 | int32 | int64 | float32 | float64 | int | uint
 }
 
-// SliceRemoveIndex 移除 slice 中的一个元素
-func SliceRemoveIndex[T any](s []T, index int) []T {
-	return append(s[:index], s[index+1:]...)
-}
-
-// SliceRemoveIndexUnOrder 移除 slice 中的一个元素（无序，但效率高）
-func SliceRemoveIndexUnOrder[T any](s []T, i int) []T {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
-}
-
-// RemoveDuplicates slice 去重
-func RemoveDuplicates[T comparable](s1 []T) []T {
-	m1 := make(map[T]struct{})
-	for _, v := range s1 {
-		m1[v] = struct{}{}
+// RemoveItem 移除 slice 中的一个元素
+func RemoveItem[T any](items []T, index int) []T {
+	if index >= len(items) {
+		return []T{}
 	}
-	s2 := make([]T, 0)
-	for k := range m1 {
-		s2 = append(s2, k)
-	}
-	return s2
+	return append(items[:index], items[index+1:]...)
 }
 
-// RemoveDuplicatesInPlace slice 就地去重
-func RemoveDuplicatesInPlace(userIDs []int64) []int64 {
+// RemoveItemNoOrder 移除 slice 中的一个元素，无序
+func RemoveItemNoOrder[T any](items []T, index int) []T {
+	if index >= len(items) {
+		return []T{}
+	}
+	items[index] = items[len(items)-1]
+	return items[:len(items)-1]
+}
+
+// DeDuplicate slice 去重
+func DeDuplicate[T comparable](items []T) []T {
+	m := make(map[T]struct{})
+	for _, v := range items {
+		m[v] = struct{}{}
+	}
+	s := make([]T, 0)
+	for k := range m {
+		s = append(s, k)
+	}
+	return s
+}
+
+// DeDuplicateInPlace slice 就地去重
+func DeDuplicateInPlace[T Numbers](items []T) []T {
 	// if there are 0 or 1 items we return the slice itself.
-	if len(userIDs) < 2 {
-		return userIDs
+	if len(items) < 2 {
+		return items
 	}
 
 	// make the slice ascending sorted.
-	sort.SliceStable(userIDs, func(i, j int) bool { return userIDs[i] < userIDs[j] })
+	sort.SliceStable(items, func(i, j int) bool { return items[i] < items[j] })
 
 	uniqPointer := 0
 
-	for i := 1; i < len(userIDs); i++ {
+	for i := 1; i < len(items); i++ {
 		// compare a current item with the item under the unique pointer.
 		// if they are not the same, write the item next to the right of the unique pointer.
-		if userIDs[uniqPointer] != userIDs[i] {
+		if items[uniqPointer] != items[i] {
 			uniqPointer++
-			userIDs[uniqPointer] = userIDs[i]
+			items[uniqPointer] = items[i]
 		}
 	}
 
-	return userIDs[:uniqPointer+1]
+	return items[:uniqPointer+1]
 }
 
-// SliceDifference 取 a 中有，而 b 中没有的
-func SliceDifference[T comparable](a, b []T) []T {
+// Difference 取 items1 中有，而 items2 中没有的
+func Difference[T comparable](items1, items2 []T) []T {
 
-	mb := make(map[T]struct{}, len(b))
+	mb := make(map[T]struct{}, len(items2))
 
-	for _, x := range b {
+	for _, x := range items2 {
 		mb[x] = struct{}{}
 	}
 
 	var diff []T
 
-	for _, x := range a {
+	for _, x := range items1 {
 		if _, found := mb[x]; !found {
 			diff = append(diff, x)
 		}
@@ -77,16 +83,16 @@ func SliceDifference[T comparable](a, b []T) []T {
 	return diff
 }
 
-// SliceDifferenceBoth 取 slice1, slice2 的差集
-func SliceDifferenceBoth[T comparable](slice1, slice2 []T) []T {
+// DifferenceBoth 取 slice1, slice2 的差集
+func DifferenceBoth[T comparable](items1, items2 []T) []T {
 	var diff []T
 
-	// Loop two times, first to find slice1 strings not in slice2,
-	// second loop to find slice2 strings not in slice1
+	// Loop two times, first to find items1 strings not in items2,
+	// second loop to find items2 strings not in items1
 	for i := 0; i < 2; i++ {
-		for _, s1 := range slice1 {
+		for _, s1 := range items1 {
 			found := false
-			for _, s2 := range slice2 {
+			for _, s2 := range items2 {
 				if s1 == s2 {
 					found = true
 					break
@@ -99,15 +105,15 @@ func SliceDifferenceBoth[T comparable](slice1, slice2 []T) []T {
 		}
 		// Swap the slices, only if it was the first loop
 		if i == 0 {
-			slice1, slice2 = slice2, slice1
+			items1, items2 = items2, items1
 		}
 	}
 
 	return diff
 }
 
-// SliceIntersection 两个 slice 的交集
-func SliceIntersection[T comparable](s1, s2 []T) (inter []T) {
+// Intersection 两个 slice 的交集
+func Intersection[T comparable](s1, s2 []T) (inter []T) {
 	hash := make(map[T]bool)
 	for _, e := range s1 {
 		hash[e] = true
@@ -135,8 +141,8 @@ func removeDups[T comparable](elements []T) (nodups []T) {
 	return
 }
 
-// TimeExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
-func TimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anotherEndTime time.Time) bool {
+// IsTimeExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
+func IsTimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anotherEndTime time.Time) bool {
 	if anotherStartTime.After(endTime) || anotherEndTime.Before(startTime) {
 		return false
 	} else {
@@ -144,8 +150,8 @@ func TimeExistIntersection(startTime, endTime time.Time, anotherStartTime, anoth
 	}
 }
 
-// TimestampExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
-func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anotherEndTime int64) bool {
+// IsTimestampExistIntersection 两个时间段是否有交集 false 没有交集，true 有交集
+func IsTimestampExistIntersection(startTime, endTime int64, anotherStartTime, anotherEndTime int64) bool {
 	if endTime < anotherStartTime || startTime > anotherEndTime {
 		return false
 	} else {
@@ -154,14 +160,14 @@ func TimestampExistIntersection(startTime, endTime int64, anotherStartTime, anot
 }
 
 // MaxNumber booleans, numbers, strings, pointers, channels, arrays
-func MaxNumber[T Numbers](n ...T) T {
-	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
-	return n[len(n)-1]
+func MaxNumber[T Numbers](e ...T) T {
+	sort.Slice(e, func(i, j int) bool { return e[i] < e[j] })
+	return e[len(e)-1]
 }
 
-func MinNumber[T Numbers](n ...T) T {
-	sort.Slice(n, func(i, j int) bool { return n[i] < n[j] })
-	return n[0]
+func MinNumber[T Numbers](e ...T) T {
+	sort.Slice(e, func(i, j int) bool { return e[i] < e[j] })
+	return e[0]
 }
 
 // NotIn e 不在 s 中吗？ true 不在， false 在
@@ -184,10 +190,10 @@ func In[T comparable](e T, items []T) bool {
 	return false
 }
 
-// SliceReverse 反转 slice
-func SliceReverse[T any](slice []T) {
-	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
-		slice[i], slice[j] = slice[j], slice[i]
+// Reverse 反转 slice
+func Reverse[T any](items []T) {
+	for i, j := 0, len(items)-1; i < j; i, j = i+1, j-1 {
+		items[i], items[j] = items[j], items[i]
 	}
 }
 
@@ -211,28 +217,28 @@ func Pageination[T any](page, pageSize int, s []T) []T {
 }
 
 // Filter filter one slice
-//func Filter[T any](objs []T, filter func(obj T) bool) []T {
-//	res := make([]T, 0, len(objs))
-//	for i := range objs {
-//		ok := filter(objs[i])
-//		if ok {
-//			res = append(res, objs[i])
-//		}
-//	}
-//	return res
-//}
+// func Filter[T any](objs []T, filter func(obj T) bool) []T {
+// 	res := make([]T, 0, len(objs))
+// 	for i := range objs {
+// 		ok := filter(objs[i])
+// 		if ok {
+// 			res = append(res, objs[i])
+// 		}
+// 	}
+// 	return res
+// }
 
 // Map one slice
-//func Map[T any, K any](objs []T, mapper func(obj T) ([]K, bool)) []K {
-//	res := make([]K, 0, len(objs))
-//	for i := range objs {
-//		others, ok := mapper(objs[i])
-//		if ok {
-//			res = append(res, others...)
-//		}
-//	}
-//	return res
-//}
+// func Map[T any, K any](objs []T, mapper func(obj T) ([]K, bool)) []K {
+// 	res := make([]K, 0, len(objs))
+// 	for i := range objs {
+// 		others, ok := mapper(objs[i])
+// 		if ok {
+// 			res = append(res, others...)
+// 		}
+// 	}
+// 	return res
+// }
 
 // First make return first for slice
 func First[T any](objs []T) (T, bool) {

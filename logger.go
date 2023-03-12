@@ -37,7 +37,7 @@ func InitLogger(level string, w ...io.Writer) {
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	var writers = make([]io.Writer, 0)
 	if len(w) == 0 {
-		w = append(w, zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "2006/01/02 15:04:05"})
+		w = append(w, zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "2006/01/02 15:04:05"})
 	}
 	writers = append(writers, w...)
 	multi := zerolog.MultiLevelWriter(writers...)
