@@ -1,7 +1,9 @@
 package rice
 
 import (
+	"crypto/rand"
 	"errors"
+	"math/big"
 	"net"
 	"os"
 	"strings"
@@ -23,4 +25,12 @@ func LocalAddr() (string, error) {
 		return "", errors.New("can't get local addr")
 	}
 	return s[:i], nil
+}
+
+func RandNumber(max int64) int64 {
+	if max <= 0 {
+		return 0
+	}
+	result, _ := rand.Int(rand.Reader, big.NewInt(max))
+	return result.Int64()
 }
