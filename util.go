@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func LocalHostname() (string, error) {
@@ -33,4 +34,23 @@ func RandNumber(max int64) int64 {
 	}
 	result, _ := rand.Int(rand.Reader, big.NewInt(max))
 	return result.Int64()
+}
+
+func LowerTitle(s string) string {
+	if s == "" {
+		return s
+	}
+
+	a := []rune(s)
+	a[0] = unicode.ToLower(a[0])
+	return string(a)
+}
+
+func RemoveInvisibleChars(s string) string {
+	return strings.Map(func(r rune) rune {
+		if unicode.IsGraphic(r) {
+			return r
+		}
+		return -1
+	}, s)
 }
