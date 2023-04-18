@@ -6,6 +6,7 @@ import (
 	"math/big"
 	"net"
 	"os"
+	"runtime/debug"
 	"strings"
 	"unicode"
 )
@@ -53,4 +54,21 @@ func RemoveInvisibleChars(s string) string {
 		}
 		return -1
 	}, s)
+}
+
+func VersionInfo() (string, string) {
+	var gitRevision string
+	buildInfo, ok := debug.ReadBuildInfo()
+	if ok {
+		for _, v := range buildInfo.Settings {
+			if v.Key == "vcs.revision" {
+				gitRevision = v.Value
+				break
+			}
+		}
+	}
+	if len(gitRevision) < 7 {
+		return "", buildInfo.GoVersion
+	}
+	return gitRevision[0:7], buildInfo.GoVersion
 }
