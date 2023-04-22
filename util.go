@@ -1,7 +1,9 @@
 package rice
 
 import (
+	"bytes"
 	"crypto/rand"
+	"encoding/json"
 	"errors"
 	"math/big"
 	"net"
@@ -71,4 +73,21 @@ func VersionInfo() (string, string) {
 		return "", buildInfo.GoVersion
 	}
 	return gitRevision[0:7], buildInfo.GoVersion
+}
+
+func JsonEncode(t any) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
+}
+
+func JsonEncodeIndent(t any, prefix, indent string) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	encoder.SetIndent(prefix, indent)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
 }
