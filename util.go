@@ -91,3 +91,23 @@ func JsonEncodeIndent(t any, prefix, indent string) ([]byte, error) {
 	err := encoder.Encode(t)
 	return buffer.Bytes(), err
 }
+
+func Exists(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		return os.IsExist(err)
+	}
+	return true
+}
+
+func IsDir(path string) bool {
+	s, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return s.IsDir()
+}
+
+func IsFile(path string) bool {
+	return !IsDir(path)
+}
