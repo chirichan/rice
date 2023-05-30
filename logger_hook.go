@@ -12,9 +12,18 @@ type TelegramHook struct {
 	Notifier *notify.Notify
 }
 
-func NewTelegramHook(token, proxy string, chatID ...int64) (*TelegramHook, error) {
-	notifier, err := NewTelegramBotNotifier(token, proxy, chatID...)
-	return &TelegramHook{Notifier: notifier}, err
+func NewTelegramHook() *TelegramHook {
+	return &TelegramHook{Notifier: notify.New()}
+}
+
+func (t *TelegramHook) AddTelegramBot(token, proxy string, chatID ...int64) *TelegramHook {
+	telegramService, err := NewTelegramService(token, proxy)
+	if err != nil {
+		return t
+	}
+	telegramService.AddReceivers(chatID...)
+	t.Notifier.UseServices(telegramService)
+	return t
 }
 
 func (t *TelegramHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
