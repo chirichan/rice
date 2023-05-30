@@ -8,9 +8,18 @@ import (
 	"github.com/nikoksr/notify"
 )
 
-var Notifier = notify.New()
+func NewTelegramBotNotifier(token, proxy string, chatID ...int64) (*notify.Notify, error) {
+	telegramService, err := NewTelegramService(token, proxy)
+	if err != nil {
+		return nil, err
+	}
+	telegramService.AddReceivers(chatID...)
+	notifier := notify.New()
+	notifier.UseServices(telegramService)
+	return notifier, nil
+}
 
-func InitTelegramBotNotifier(token, proxy string, chatID ...int64) error {
+func NewTelegramService(token, proxy string) (*telegram.Telegram, error) {
 	var connAttempts = 10
 	var telegramService *telegram.Telegram
 	var err error
@@ -23,8 +32,7 @@ func InitTelegramBotNotifier(token, proxy string, chatID ...int64) error {
 		connAttempts--
 	}
 	if telegramService == nil {
-		return fmt.Errorf("telegramService init fail: %v", err)
+		return nil, fmt.Errorf("telegramService init fail: %v", err)
 	}
-	Notifier.UseServices(telegramService)
-	return nil
+	return telegramService, nil
 }
