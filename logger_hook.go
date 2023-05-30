@@ -8,15 +8,15 @@ import (
 	"github.com/rs/zerolog"
 )
 
-type TelegramHook struct {
+type NotifyHook struct {
 	Notifier *notify.Notify
 }
 
-func NewTelegramHook() *TelegramHook {
-	return &TelegramHook{Notifier: notify.New()}
+func NewNotifyHook() *NotifyHook {
+	return &NotifyHook{Notifier: notify.New()}
 }
 
-func (t *TelegramHook) AddTelegramBot(token, proxy string, chatID ...int64) *TelegramHook {
+func (t *NotifyHook) AddTelegramBot(token, proxy string, chatID ...int64) *NotifyHook {
 	telegramService, err := NewTelegramService(token, proxy)
 	if err != nil {
 		return t
@@ -26,7 +26,7 @@ func (t *TelegramHook) AddTelegramBot(token, proxy string, chatID ...int64) *Tel
 	return t
 }
 
-func (t *TelegramHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
+func (t *NotifyHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
 	if level > zerolog.DebugLevel {
 		go func() {
 			_ = t.send(level.String(), message)
@@ -34,7 +34,7 @@ func (t *TelegramHook) Run(e *zerolog.Event, level zerolog.Level, message string
 	}
 }
 
-func (t *TelegramHook) send(title, msg string) error {
+func (t *NotifyHook) send(title, msg string) error {
 	ctx, cancel := context.WithTimeout(
 		context.Background(),
 		30*time.Second,
