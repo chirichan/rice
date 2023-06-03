@@ -37,7 +37,7 @@ func (t *NotifyHook) Run(e *zerolog.Event, level zerolog.Level, message string) 
 
 func (t *NotifyHook) Write(p []byte) (n int, err error) {
 	go func() {
-		_ = t.send("", bytes.NewBuffer(p).String())
+		_ = t.send("", "<pre><code>"+bytes.NewBuffer(p).String()+"</code></pre>")
 	}()
 	return len(p), nil
 }
