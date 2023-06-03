@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"bytes"
 	"context"
 	"time"
 
@@ -32,6 +33,13 @@ func (t *NotifyHook) Run(e *zerolog.Event, level zerolog.Level, message string) 
 			_ = t.send(level.String(), message)
 		}()
 	}
+}
+
+func (t *NotifyHook) Write(p []byte) (n int, err error) {
+	go func() {
+		_ = t.send("", bytes.NewBuffer(p).String())
+	}()
+	return len(p), nil
 }
 
 func (t *NotifyHook) send(title, msg string) error {

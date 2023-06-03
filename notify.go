@@ -2,6 +2,7 @@ package rice
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/chirichan/rice/telegram"
@@ -28,6 +29,7 @@ func NewTelegramService(token, proxy string) (*telegram.Telegram, error) {
 		if err == nil {
 			break
 		}
+		log.Printf("telegram service: trying connect, left %d\n", connAttempts)
 		time.Sleep(1 * time.Second)
 		connAttempts--
 	}
