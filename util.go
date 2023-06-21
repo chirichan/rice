@@ -111,3 +111,12 @@ func IsDir(path string) bool {
 func IsFile(path string) bool {
 	return !IsDir(path)
 }
+
+// RandInt generate a number range [0, max)
+func RandInt(max int64) int64 {
+	if max <= 0 {
+		return 0
+	}
+	result, _ := rand.Int(rand.Reader, big.NewInt(max))
+	return result.Int64()
+}

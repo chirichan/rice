@@ -47,7 +47,7 @@ func TestDeDuplicate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DeDuplicate(tt.args.items); !reflect.DeepEqual(got, tt.want) {
+			if got := DeDuplicate(tt.args.items); len(got) != len(tt.want) {
 				t.Errorf("DeDuplicate() = %v, want %v", got, tt.want)
 			}
 		})

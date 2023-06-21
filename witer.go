@@ -6,9 +6,17 @@ import (
 	"net/http"
 )
 
+// Remote service writer
 type RSWriter struct {
 	url    string
 	client *http.Client
+}
+
+func NewRSWriter(url string) *RSWriter {
+	return &RSWriter{
+		url:    url,
+		client: http.DefaultClient,
+	}
 }
 
 func (w *RSWriter) Write(p []byte) (n int, err error) {
@@ -27,3 +35,9 @@ func (w *RSWriter) Write(p []byte) (n int, err error) {
 	}
 	return len(p), nil
 }
+
+// Elasticsearch writer
+type ESWriter struct{}
+
+// MQ writer
+type MQWriter struct{}
