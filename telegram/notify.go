@@ -17,7 +17,7 @@ var parseMode = ModeHTML // HTML is the default mode.
 
 // Telegram struct holds necessary data to communicate with the Telegram API.
 type Telegram struct {
-	client  *tgbotapi.BotAPI
+	Client  *tgbotapi.BotAPI
 	chatIDs []int64
 }
 
@@ -32,7 +32,7 @@ func New(apiToken string) (*Telegram, error) {
 	}
 
 	t := &Telegram{
-		client:  client,
+		Client:  client,
 		chatIDs: []int64{},
 	}
 
@@ -46,7 +46,7 @@ func NewWithHttpClient(apiToken string, httpClient *http.Client) (*Telegram, err
 	}
 
 	t := &Telegram{
-		client:  client,
+		Client:  client,
 		chatIDs: []int64{},
 	}
 
@@ -81,7 +81,7 @@ func (t Telegram) Send(ctx context.Context, subject, message string) error {
 			return ctx.Err()
 		default:
 			msg.ChatID = chatID
-			_, err := t.client.Send(msg)
+			_, err := t.Client.Send(msg)
 			if err != nil {
 				return errors.Wrapf(err, "failed to send message to Telegram chat '%d'", chatID)
 			}

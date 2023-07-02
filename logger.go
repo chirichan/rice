@@ -24,10 +24,14 @@ var levelMap = map[string]zerolog.Level{
 	"":         zerolog.InfoLevel,
 }
 
-func InitLogger(level string, w ...io.Writer) {
+func InitZerolog(level string) {
 	zerolog.SetGlobalLevel(levelMap[strings.ToLower(level)])
 	zerolog.TimeFieldFormat = consoleDefaultTimeFormat
+	zerolog.TimestampFieldName = "timestamp"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+}
+
+func InitLogger(w ...io.Writer) {
 	if len(w) == 0 {
 		w = make([]io.Writer, 0)
 		w = append(w, NewConsoleWriter())
