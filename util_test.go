@@ -90,3 +90,31 @@ func TestIsDir(t *testing.T) {
 
 	}
 }
+
+func TestSplitNString(t *testing.T) {
+	type args struct {
+		s     string
+		index int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "",
+			args: args{
+				s:     "",
+				index: 10,
+			},
+			want: "",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SplitNString(tt.args.s, tt.args.index); got != tt.want {
+				t.Errorf("SplitNString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -3,6 +3,8 @@ package rice
 import (
 	"bytes"
 	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"math/big"
@@ -11,6 +13,7 @@ import (
 	"runtime/debug"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 func LocalHostname() (string, error) {
@@ -119,4 +122,25 @@ func RandInt(max int64) int64 {
 	}
 	result, _ := rand.Int(rand.Reader, big.NewInt(max))
 	return result.Int64()
+}
+
+func SplitNString(s string, index int) string {
+	if utf8.RuneCountInString(s) <= index {
+		return s
+	}
+	n := 0
+	c := 0
+	for _, r := range s {
+		if c == index {
+			break
+		}
+		n += utf8.RuneLen(r)
+		c++
+	}
+	return s[:n]
+}
+
+func Hash(s string) string {
+	sum256 := sha256.Sum256([]byte(s))
+	return hex.EncodeToString(sum256[:])
 }
