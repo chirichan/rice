@@ -60,7 +60,7 @@ func TestRemoveInvisibleChars(t *testing.T) {
 		args args
 		want string
 	}{
-		// TODO: Add test cases.
+		//lint:ignore ST1018 ignore
 		{"", args{"bushi​"}, "bushi"},
 	}
 	for _, tt := range tests {
