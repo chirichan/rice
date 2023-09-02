@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/rs/xid"
 	"github.com/yitter/idgenerator-go/idgen"
 )
 
@@ -20,3 +21,5 @@ func NextID() int64 { return idgen.NextId() }
 func NextStringID() string { return strconv.FormatInt(idgen.NextId(), 10) }
 
 func NextUUID() string { return strings.ReplaceAll(uuid.NewString(), "-", "") }
+
+func NextXID() string { return xid.New().String() }
