@@ -8,7 +8,7 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 )
 
-const consoleDefaultTimeFormat = "2006/01/02 15:04:05.000"
+const consoleDefaultTimeFormat = "2006/01/02 15:04:05.000000"
 
 var Logger zerolog.Logger
 var levelMap = map[string]zerolog.Level{
@@ -24,11 +24,12 @@ var levelMap = map[string]zerolog.Level{
 	"":         zerolog.InfoLevel,
 }
 
-func InitZerolog(level string) {
+func InitZerolog(level string, w ...io.Writer) {
 	zerolog.SetGlobalLevel(levelMap[strings.ToLower(level)])
 	zerolog.TimeFieldFormat = consoleDefaultTimeFormat
 	zerolog.TimestampFieldName = "timestamp"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	InitLogger(w...)
 }
 
 func InitLogger(w ...io.Writer) {

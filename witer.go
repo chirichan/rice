@@ -1,13 +1,10 @@
 package rice
 
 import (
-	"bytes"
-	"fmt"
 	"io"
-	"net/http"
 
-	"github.com/natefinch/lumberjack"
 	"github.com/rs/zerolog"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const (
@@ -16,42 +13,6 @@ const (
 	_defaultMaxBackups = 30   // backups
 	_defaultCompress   = true // compress
 )
-
-// Remote service writer
-type RSWriter struct {
-	url    string
-	client *http.Client
-}
-
-func NewRSWriter(url string) *RSWriter {
-	return &RSWriter{
-		url:    url,
-		client: http.DefaultClient,
-	}
-}
-
-func (w *RSWriter) Write(p []byte) (n int, err error) {
-	req, err := http.NewRequest("POST", w.url, bytes.NewReader(p))
-	if err != nil {
-		return 0, err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := w.client.Do(req)
-	if err != nil {
-		return 0, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("remote service returned status code %d", resp.StatusCode)
-	}
-	return len(p), nil
-}
-
-// TODO Elasticsearch writer
-type ESWriter struct{}
-
-// TODO MQ writer
-type MQWriter struct{}
 
 func NewConsoleWriter() zerolog.ConsoleWriter {
 	return zerolog.NewConsoleWriter(
