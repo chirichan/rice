@@ -1,9 +1,6 @@
 package rice
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
 	"testing"
 )
 
@@ -69,25 +66,6 @@ func TestRemoveInvisibleChars(t *testing.T) {
 				t.Errorf("RemoveInvisibleChars() = %v, want %v", got, tt.want)
 			}
 		})
-	}
-}
-
-func TestIsDir(t *testing.T) {
-	base := ".vscode"
-
-	// f, _ := os.Open(".vscode")
-	// finfo, _ := f.Readdir(-1)
-
-	// for _, v := range finfo {
-	// 	fmt.Printf("v.Name(): %v\n", v.Name())
-	// }
-
-	de, err := os.ReadDir(base)
-	_ = err
-	for _, v := range de {
-
-		fmt.Printf("v.Name(): %v\n", filepath.Join(base, v.Name()))
-
 	}
 }
 

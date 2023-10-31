@@ -10,12 +10,15 @@ import (
 	"math/big"
 	"net"
 	"os"
+	"reflect"
 	"runtime/debug"
 	"strings"
+	"time"
 	"unicode"
 	"unicode/utf8"
 )
 
+// LocalHostname 主机名
 func LocalHostname() (string, error) {
 	return os.Hostname()
 }
@@ -34,14 +37,7 @@ func LocalAddr() (string, error) {
 	return s[:i], nil
 }
 
-func RandNumber(max int64) int64 {
-	if max <= 0 {
-		return 0
-	}
-	result, _ := rand.Int(rand.Reader, big.NewInt(max))
-	return result.Int64()
-}
-
+// LowerTitle 首字母小写
 func LowerTitle(s string) string {
 	if s == "" {
 		return s
@@ -52,6 +48,7 @@ func LowerTitle(s string) string {
 	return string(a)
 }
 
+// RemoveInvisibleChars 移除字符串中的不可见字符
 func RemoveInvisibleChars(s string) string {
 	return strings.Map(func(r rune) rune {
 		if unicode.IsGraphic(r) {
@@ -61,6 +58,7 @@ func RemoveInvisibleChars(s string) string {
 	}, s)
 }
 
+// VersionInfo 返回 git revision 和 go version
 func VersionInfo() (string, string) {
 	var gitRevision string
 	buildInfo, ok := debug.ReadBuildInfo()
@@ -95,28 +93,8 @@ func JsonEncodeIndent(t any, prefix, indent string) ([]byte, error) {
 	return buffer.Bytes(), err
 }
 
-func Exists(path string) bool {
-	_, err := os.Stat(path)
-	if err != nil {
-		return os.IsExist(err)
-	}
-	return true
-}
-
-func IsDir(path string) bool {
-	s, err := os.Stat(path)
-	if err != nil {
-		return false
-	}
-	return s.IsDir()
-}
-
-func IsFile(path string) bool {
-	return !IsDir(path)
-}
-
-// RandInt generate a number range [0, max)
-func RandInt(max int64) int64 {
+// RandNumber generate a number range [0, max)
+func RandNumber(max int64) int64 {
 	if max <= 0 {
 		return 0
 	}
@@ -144,3 +122,23 @@ func Hash(s string) string {
 	sum256 := sha256.Sum256([]byte(s))
 	return hex.EncodeToString(sum256[:])
 }
+
+func IsNil(x any) bool {
+	if x == nil {
+		return true
+	}
+	return reflect.ValueOf(x).IsNil()
+}
+
+func TrackTime(pre time.Time) time.Duration {
+	elapsed := time.Since(pre)
+	return elapsed
+}
+
+// func TrackTimeFunc() func() {
+// 	pre := time.Now()
+// 	return func() {
+// 		elapsed := time.Since(pre)
+// 		fmt.Println("elapsed:", elapsed)
+// 	}
+// }
