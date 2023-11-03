@@ -5,12 +5,13 @@ import (
 	"log"
 	"time"
 
-	"github.com/chirichan/rice/telegram"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/nikoksr/notify"
+	"github.com/nikoksr/notify/service/telegram"
 )
 
 func NewTelegramBotNotifier(token, proxy string, chatID ...int64) (*notify.Notify, error) {
-	telegramService, err := NewTelegramService(token, proxy)
+	telegramService, err := NewTelegramNotifier(token, proxy)
 	if err != nil {
 		return nil, err
 	}
@@ -20,21 +21,31 @@ func NewTelegramBotNotifier(token, proxy string, chatID ...int64) (*notify.Notif
 	return notifier, nil
 }
 
-func NewTelegramService(token, proxy string) (*telegram.Telegram, error) {
+func NewTelegramNotifier(token, proxy string) (*telegram.Telegram, error) {
+	telegramBot, err := NewTelegramBot(token, proxy)
+	if err != nil {
+		return nil, err
+	}
+	telegramNotifier := &telegram.Telegram{}
+	telegramNotifier.SetClient(telegramBot)
+	return telegramNotifier, nil
+}
+
+func NewTelegramBot(token, proxy string) (*tgbotapi.BotAPI, error) {
 	var connAttempts = 10
-	var telegramService *telegram.Telegram
 	var err error
+	var botAPI *tgbotapi.BotAPI
 	for connAttempts > 0 {
-		telegramService, err = telegram.NewWithHttpClient(token, newHttpClient(httpProxy(proxy)))
+		botAPI, err = tgbotapi.NewBotAPIWithClient(token, newHttpClient(httpProxy(proxy)))
 		if err == nil {
 			break
 		}
-		log.Printf("telegram service: trying connect, left %d\n", connAttempts)
+		log.Printf("telegram notifier: trying connect, left %d\n", connAttempts)
 		time.Sleep(1 * time.Second)
 		connAttempts--
 	}
-	if telegramService == nil {
-		return nil, fmt.Errorf("telegramService init fail: %v", err)
+	if botAPI == nil {
+		return nil, fmt.Errorf("telegram bot init fail: %v", err)
 	}
-	return telegramService, nil
+	return botAPI, nil
 }

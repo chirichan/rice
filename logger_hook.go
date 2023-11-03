@@ -18,12 +18,12 @@ func NewNotifyHook() *NotifyHook {
 }
 
 func (t *NotifyHook) AddTelegramBot(token, proxy string, chatID ...int64) *NotifyHook {
-	telegramService, err := NewTelegramService(token, proxy)
+	telegramNotifier, err := NewTelegramNotifier(token, proxy)
 	if err != nil {
 		return t
 	}
-	telegramService.AddReceivers(chatID...)
-	t.Notifier.UseServices(telegramService)
+	telegramNotifier.AddReceivers(chatID...)
+	t.Notifier.UseServices(telegramNotifier)
 	return t
 }
 
