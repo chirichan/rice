@@ -2,6 +2,7 @@ package rice
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -17,19 +18,18 @@ func TimerRun(ctx context.Context, tm time.Time, task ...Task) error {
 	timer := time.NewTimer(time.Until(tm))
 	defer timer.Stop()
 
+	var err error
 	select {
 	case <-timer.C:
 		for _, tk := range task {
-			err := tk()
-			if err != nil {
-				return err
+			if err = tk(); err != nil {
+				err = errors.Join(err)
 			}
 		}
-		return nil
+		return err
 	case <-ctx.Done():
-		return nil
+		return err
 	}
-
 }
 
 func TickerRun(ctx context.Context, d time.Duration, task ...Task) error {

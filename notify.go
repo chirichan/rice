@@ -40,12 +40,12 @@ func NewTelegramBot(token, proxy string) (*tgbotapi.BotAPI, error) {
 		if err == nil {
 			break
 		}
-		log.Printf("telegram notifier: trying connect, left %d\n", connAttempts)
+		log.Printf("telegram notifier: trying connect, left: %d\n", connAttempts)
 		time.Sleep(1 * time.Second)
 		connAttempts--
 	}
 	if botAPI == nil {
-		return nil, fmt.Errorf("telegram bot init fail: %v", err)
+		return nil, fmt.Errorf("telegram bot init error: %w", err)
 	}
 	return botAPI, nil
 }

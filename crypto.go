@@ -70,7 +70,7 @@ func (r *RSASign) Verify(data []byte, signature []byte) error {
 // BCryptGenerateFromPassword generate hash from password
 func BCryptGenerateFromPassword(pwd string) (string, error) {
 	password, err := bcrypt.GenerateFromPassword(StringByteUnsafe(pwd), bcrypt.DefaultCost)
-	return ByteString(password), err
+	return ByteStringUnsafe(password), err
 }
 
 // BCryptCompareHashAndPassword true or false

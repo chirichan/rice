@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	_defaultMaxSize    = 512  // Mb
+	_defaultMaxSize    = 100  // Mb
 	_defaultMaxAge     = 30   // days
 	_defaultMaxBackups = 30   // backups
 	_defaultCompress   = true // compress

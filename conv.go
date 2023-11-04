@@ -5,18 +5,8 @@ import (
 	"unsafe"
 )
 
-// ByteString []byte to string
-func ByteString(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
-
-// BytesBufferString []byte to string
-func BytesBufferString(b []byte) string { return bytes.NewBuffer(b).String() }
-
-// StringByte string to []byte
-func StringByte(s string) []byte {
-	b := make([]byte, len(s))
-	copy(b, s)
-	return b
-}
+// ByteStringUnsafe []byte to string
+func ByteStringUnsafe(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
 
 // StringByteUnsafe string to []byte
 func StringByteUnsafe(s string) []byte {
@@ -26,4 +16,14 @@ func StringByteUnsafe(s string) []byte {
 			Cap int
 		}{s, len(s)},
 	))
+}
+
+// BytesBufferString []byte to string
+func BytesBufferString(b []byte) string { return bytes.NewBuffer(b).String() }
+
+// StringByte string to []byte
+func StringByte(s string) []byte {
+	b := make([]byte, len(s))
+	copy(b, s)
+	return b
 }
