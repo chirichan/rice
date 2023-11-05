@@ -17,7 +17,7 @@ func NewNotifyHook() *NotifyHook {
 	return &NotifyHook{Notifier: notify.New()}
 }
 
-func (t *NotifyHook) AddTelegramBot(token, proxy string, chatID ...int64) *NotifyHook {
+func (t *NotifyHook) AddTelegramNotifierHook(token, proxy string, chatID ...int64) *NotifyHook {
 	telegramNotifier, err := NewTelegramNotifier(token, proxy)
 	if err != nil {
 		return t
