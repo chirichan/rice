@@ -1,15 +1,13 @@
 package rice
 
 import (
-	"io"
-
 	"github.com/rs/zerolog"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 const (
 	_defaultMaxSize    = 100  // Mb
-	_defaultMaxAge     = 30   // days
+	_defaultMaxAge     = 180  // days
 	_defaultMaxBackups = 30   // backups
 	_defaultCompress   = true // compress
 )
@@ -25,7 +23,7 @@ func NewConsoleWriter() zerolog.ConsoleWriter {
 	)
 }
 
-func NewLumberjackLogger(fileName string, opts ...LumberjackOption) io.Writer {
+func NewFileWriter(fileName string, opts ...LumberjackOption) *lumberjack.Logger {
 	lumberjackLogger := &lumberjack.Logger{
 		Filename:   fileName,
 		MaxSize:    _defaultMaxSize,
