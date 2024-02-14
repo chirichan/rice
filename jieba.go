@@ -1,19 +1,14 @@
 package rice
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/mozillazg/go-pinyin"
-	"io"
-	"net/http"
 	"net/url"
 	"strings"
-	"time"
+
+	"github.com/mozillazg/go-pinyin"
 )
 
 const pullWordAPIAddress = "http://api.pullword.com/get.php"
-
-var c = &http.Client{Timeout: 5 * time.Second}
 
 type pullWordResp struct {
 	T string `json:"t"`
@@ -29,21 +24,9 @@ func Jieba(s string) ([]string, error) {
 		return nil, err
 	}
 	parsedURL.RawQuery = fmt.Sprintf("source=%s&param1=%d&param2=%d&json=%d", url.QueryEscape(s), 0, 0, 1)
-	r, err := c.Get(parsedURL.String())
+	resp, err := Get[[]pullWordResp](parsedURL.String())
 	if err != nil {
 		return nil, err
-	}
-	defer r.Body.Close()
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		return nil, err
-	}
-	var resp []pullWordResp
-	if err := json.Unmarshal(b, &resp); err != nil {
-		return nil, err
-	}
-	if len(resp) == 0 {
-		return nil, nil
 	}
 	var s2 []string
 	for _, v := range resp {
