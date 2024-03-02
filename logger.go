@@ -27,7 +27,7 @@ var levelMap = map[string]zerolog.Level{
 func InitZerolog(level string, w ...io.Writer) {
 	zerolog.SetGlobalLevel(levelMap[strings.ToLower(level)])
 	zerolog.TimeFieldFormat = consoleDefaultTimeFormat
-	zerolog.TimestampFieldName = "timestamp"
+	// zerolog.TimestampFieldName = "timestamp"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 	InitLogger(w...)
 }

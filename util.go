@@ -9,7 +9,6 @@ import (
 	"errors"
 	"math/big"
 	"net"
-	"os"
 	"reflect"
 	"runtime/debug"
 	"strings"
@@ -17,11 +16,6 @@ import (
 	"unicode"
 	"unicode/utf8"
 )
-
-// LocalHostname 主机名
-func LocalHostname() (string, error) {
-	return os.Hostname()
-}
 
 func LocalAddr() (string, error) {
 	conn, err := net.Dial("udp", "8.8.8.8:80")
