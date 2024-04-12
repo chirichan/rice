@@ -32,9 +32,9 @@ func newHttpClient(opts ...httpClientOption) *http.Client {
 	return httpClient
 }
 
-func Get[R any](url string) (R, error) {
+func Get[R any](baseURL string, queryParam url.Values) (R, error) {
 	var result R
-	response, err := http.Get(url)
+	response, err := http.Get(baseURL + "/?" + queryParam.Encode())
 	if err != nil {
 		return result, err
 	}
@@ -43,12 +43,11 @@ func Get[R any](url string) (R, error) {
 	if err != nil {
 		return result, err
 	}
-	if len(b) != 0 {
-		if err := json.Unmarshal(b, &result); err != nil {
-			return result, err
-		}
+	if len(b) == 0 {
+		return result, errors.New("empty response body")
 	}
-	return result, nil
+	err = json.Unmarshal(b, &result)
+	return result, err
 }
 
 // PostJson application/json

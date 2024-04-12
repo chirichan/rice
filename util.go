@@ -15,6 +15,8 @@ import (
 	"time"
 	"unicode"
 	"unicode/utf8"
+
+	"golang.org/x/net/idna"
 )
 
 func LocalAddr() (string, error) {
@@ -136,3 +138,20 @@ func TrackTime(pre time.Time) time.Duration {
 // 		fmt.Println("elapsed:", elapsed)
 // 	}
 // }
+
+func PunycodeEncode(s string) (string, error) {
+	punycode, err := idna.ToASCII(s)
+	if err != nil {
+		return "", err
+	}
+	return strings.ToUpper(punycode), nil
+}
+
+func IsASCII(s string) bool {
+	for _, v := range s {
+		if !unicode.Is(unicode.ASCII_Hex_Digit, v) {
+			return false
+		}
+	}
+	return true
+}

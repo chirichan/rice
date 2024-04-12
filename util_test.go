@@ -52,3 +52,36 @@ func TestSplitNString(t *testing.T) {
 		})
 	}
 }
+
+func TestPunycodeEncode(t *testing.T) {
+	type args struct {
+		chineseDomain string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "",
+			args: args{
+				chineseDomain: "中国",
+			},
+			want:    "XN--FIQS8S",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PunycodeEncode(tt.args.chineseDomain)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("PunycodeEncode() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("PunycodeEncode() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
