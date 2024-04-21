@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"math/big"
 	"net"
 	"reflect"
@@ -19,18 +18,20 @@ import (
 	"golang.org/x/net/idna"
 )
 
-func LocalAddr() (string, error) {
-	conn, err := net.Dial("udp", "8.8.8.8:80")
-	if err != nil {
-		return "", err
-	}
+func IP() string {
+	resp, _ := Get[map[string]any]("http://ip-api.com/json/?lang=zh-CN")
+	return resp["query"].(string)
+}
+
+func LocalAddr() string {
+	conn, _ := net.Dial("udp", "8.8.8.8:80")
 	defer conn.Close()
 	s := conn.LocalAddr().String()
 	i := strings.LastIndex(s, ":")
 	if i == -1 {
-		return "", errors.New("can't get local addr")
+		return ""
 	}
-	return s[:i], nil
+	return s[:i]
 }
 
 // LowerTitle 首字母小写

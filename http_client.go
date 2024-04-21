@@ -32,9 +32,9 @@ func newHttpClient(opts ...httpClientOption) *http.Client {
 	return httpClient
 }
 
-func Get[R any](baseURL string, queryParam url.Values) (R, error) {
+func Get[R any](url string) (R, error) {
 	var result R
-	response, err := http.Get(baseURL + "/?" + queryParam.Encode())
+	response, err := http.Get(url)
 	if err != nil {
 		return result, err
 	}
