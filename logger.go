@@ -2,6 +2,8 @@ package rice
 
 import (
 	"io"
+	"log/slog"
+	"os"
 	"strings"
 
 	"github.com/rs/zerolog"
@@ -48,4 +50,24 @@ func InitLogger(w ...io.Writer) {
 		Caller().
 		Stack().
 		Logger()
+}
+
+func SetTextSlog() {
+	opt := &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}
+	handler := slog.NewTextHandler(os.Stdout, opt)
+	newSlog := slog.New(handler)
+	slog.SetDefault(newSlog)
+}
+
+func SetJsonSlog() {
+	opt := &slog.HandlerOptions{
+		AddSource: true,
+		Level:     slog.LevelDebug,
+	}
+	handler := slog.NewTextHandler(os.Stdout, opt)
+	newSlog := slog.New(handler)
+	slog.SetDefault(newSlog)
 }

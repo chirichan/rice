@@ -2,6 +2,7 @@ package rice
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
@@ -17,6 +18,16 @@ import (
 
 	"golang.org/x/net/idna"
 )
+
+func NewResolver(address string) *net.Resolver {
+	dialer := &net.Dialer{Timeout: 3 * time.Second}
+	resolver := &net.Resolver{
+		Dial: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return dialer.DialContext(ctx, network, address)
+		},
+	}
+	return resolver
+}
 
 func IP() string {
 	resp, _ := Get[map[string]any]("http://ip-api.com/json/?lang=zh-CN")
