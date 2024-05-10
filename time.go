@@ -6,6 +6,14 @@ import (
 	"time"
 )
 
+func Now() string {
+	return time.Now().Format(time.DateTime)
+}
+
+func TimeString(tm time.Time) string {
+	return tm.Format(time.DateTime)
+}
+
 func TodayZeroTime() time.Time {
 	now := time.Now()
 	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
