@@ -32,6 +32,25 @@ func newHttpClient(opts ...httpClientOption) *http.Client {
 	return httpClient
 }
 
+func Request[R any](request *http.Request) (R, error) {
+	var result R
+	client := newHttpClient()
+	response, err := client.Do(request)
+	if err != nil {
+		return result, err
+	}
+	defer response.Body.Close()
+	b, err := io.ReadAll(response.Body)
+	if err != nil {
+		return result, err
+	}
+	if len(b) == 0 {
+		return result, errors.New("empty response body")
+	}
+	err = json.Unmarshal(b, &result)
+	return result, err
+}
+
 func Get[R any](url string) (R, error) {
 	var result R
 	response, err := http.Get(url)
