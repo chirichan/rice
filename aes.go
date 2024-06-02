@@ -97,7 +97,12 @@ func AESGCMDecryptText(key string, ciphertextHex string) (string, error) {
 	return string(plaintext), nil
 }
 
-func AESGCMEncryptFile(key []byte, inputFile, outputFile string) error {
+func AESGCMEncryptFile(key, inputFile, outputFile string) error {
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return err
+	}
+
 	inFile, err := os.Open(inputFile)
 	if err != nil {
 		return err
@@ -110,7 +115,7 @@ func AESGCMEncryptFile(key []byte, inputFile, outputFile string) error {
 	}
 	defer outFile.Close()
 
-	aesGCM, nonce, err := createCipher(key)
+	aesGCM, nonce, err := createCipher(keyBytes)
 	if err != nil {
 		return err
 	}
@@ -140,7 +145,12 @@ func AESGCMEncryptFile(key []byte, inputFile, outputFile string) error {
 	return nil
 }
 
-func AESGCMDecryptFile(key []byte, inputFile, outputFile string) error {
+func AESGCMDecryptFile(key, inputFile, outputFile string) error {
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return err
+	}
+
 	inFile, err := os.Open(inputFile)
 	if err != nil {
 		return err
@@ -154,7 +164,7 @@ func AESGCMDecryptFile(key []byte, inputFile, outputFile string) error {
 	defer outFile.Close()
 
 	// 获取 AES-GCM 密钥
-	block, err := aes.NewCipher(key)
+	block, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return err
 	}
