@@ -1,69 +1,41 @@
 package rice
 
 import (
-	"bytes"
-	"context"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"math/big"
-	"net"
 	"reflect"
 	"runtime/debug"
-	"strings"
 	"time"
 	"unicode"
 	"unicode/utf8"
-
-	"golang.org/x/net/idna"
 )
 
-func NewResolver(address string) *net.Resolver {
-	dialer := &net.Dialer{Timeout: 3 * time.Second}
-	resolver := &net.Resolver{
-		Dial: func(ctx context.Context, network, addr string) (net.Conn, error) {
-			return dialer.DialContext(ctx, network, address)
-		},
+func RandomBytes(length int) ([]byte, error) {
+	key := make([]byte, length)
+	_, err := rand.Read(key)
+	if err != nil {
+		return nil, err
 	}
-	return resolver
+	return key, nil
 }
 
-func IP() string {
-	resp, _ := Get[map[string]any]("http://ip-api.com/json/?lang=zh-CN")
-	return resp["query"].(string)
+func RandomHexString(length int) (string, error) {
+	key, err := RandomBytes(length)
+	return hex.EncodeToString(key), err
 }
 
-func LocalAddr() string {
-	conn, _ := net.Dial("udp", "8.8.8.8:80")
-	defer conn.Close()
-	s := conn.LocalAddr().String()
-	i := strings.LastIndex(s, ":")
-	if i == -1 {
-		return ""
-	}
-	return s[:i]
+func SHA256(text string) string {
+	hash := sha256.New()
+	hash.Write([]byte(text))
+	hashedBytes := hash.Sum(nil)
+	return hex.EncodeToString(hashedBytes)
 }
 
-// LowerTitle 首字母小写
-func LowerTitle(s string) string {
-	if s == "" {
-		return s
-	}
-
-	a := []rune(s)
-	a[0] = unicode.ToLower(a[0])
-	return string(a)
-}
-
-// RemoveInvisibleChars 移除字符串中的不可见字符
-func RemoveInvisibleChars(s string) string {
-	return strings.Map(func(r rune) rune {
-		if unicode.IsGraphic(r) {
-			return r
-		}
-		return -1
-	}, s)
+func Hash(s string) string {
+	sum256 := sha256.Sum256([]byte(s))
+	return hex.EncodeToString(sum256[:])
 }
 
 // VersionInfo 返回 git revision 和 go version
@@ -82,23 +54,6 @@ func VersionInfo() (string, string) {
 		return "", buildInfo.GoVersion
 	}
 	return gitRevision[0:7], buildInfo.GoVersion
-}
-
-func JsonEncode(t any) ([]byte, error) {
-	buffer := &bytes.Buffer{}
-	encoder := json.NewEncoder(buffer)
-	encoder.SetEscapeHTML(false)
-	err := encoder.Encode(t)
-	return buffer.Bytes(), err
-}
-
-func JsonEncodeIndent(t any, prefix, indent string) ([]byte, error) {
-	buffer := &bytes.Buffer{}
-	encoder := json.NewEncoder(buffer)
-	encoder.SetEscapeHTML(false)
-	encoder.SetIndent(prefix, indent)
-	err := encoder.Encode(t)
-	return buffer.Bytes(), err
 }
 
 // RandNumber generate a number range [0, max)
@@ -126,11 +81,6 @@ func SplitNString(s string, index int) string {
 	return s[:n]
 }
 
-func Hash(s string) string {
-	sum256 := sha256.Sum256([]byte(s))
-	return hex.EncodeToString(sum256[:])
-}
-
 func IsNil(x any) bool {
 	if x == nil {
 		return true
@@ -150,14 +100,6 @@ func TrackTime(pre time.Time) time.Duration {
 // 		fmt.Println("elapsed:", elapsed)
 // 	}
 // }
-
-func PunycodeEncode(s string) (string, error) {
-	punycode, err := idna.ToASCII(s)
-	if err != nil {
-		return "", err
-	}
-	return strings.ToUpper(punycode), nil
-}
 
 func IsASCII(s string) bool {
 	for _, v := range s {

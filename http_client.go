@@ -10,32 +10,12 @@ import (
 	"net/url"
 )
 
-type httpClientOption func(*http.Client)
-
-func httpProxy(addr string) httpClientOption {
-	return func(c *http.Client) {
-		if addr == "" {
-			return
-		}
-		transport := &http.Transport{Proxy: func(*http.Request) (*url.URL, error) {
-			return url.Parse("socks5://" + addr)
-		}}
-		c.Transport = transport
-	}
-}
-
-func newHttpClient(opts ...httpClientOption) *http.Client {
-	httpClient := &http.Client{}
-	for _, opt := range opts {
-		opt(httpClient)
-	}
-	return httpClient
-}
+var defautlHttpClient = &http.Client{}
 
 func Request[R any](request *http.Request) (R, error) {
 	var result R
-	client := newHttpClient()
-	response, err := client.Do(request)
+
+	response, err := defautlHttpClient.Do(request)
 	if err != nil {
 		return result, err
 	}
@@ -53,7 +33,7 @@ func Request[R any](request *http.Request) (R, error) {
 
 func Get[R any](url string) (R, error) {
 	var result R
-	response, err := http.Get(url)
+	response, err := defautlHttpClient.Get(url)
 	if err != nil {
 		return result, err
 	}
@@ -76,7 +56,7 @@ func PostJson[T, R any](url string, data T) (R, error) {
 	if err != nil {
 		return result, err
 	}
-	response, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
+	response, err := defautlHttpClient.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return result, err
 	}
@@ -95,7 +75,7 @@ func PostJson[T, R any](url string, data T) (R, error) {
 // PostForm application/x-www-form-urlencoded
 func PostForm[R any](url string, data url.Values) (R, error) {
 	var result R
-	response, err := http.PostForm(url, data)
+	response, err := defautlHttpClient.PostForm(url, data)
 	if err != nil {
 		return result, err
 	}
@@ -128,7 +108,7 @@ func PostMultipartForm[R any](url string, data url.Values, wFunc WriteMutipartFu
 		return result, err
 	}
 
-	response, err := http.Post(url, w.FormDataContentType(), body)
+	response, err := defautlHttpClient.Post(url, w.FormDataContentType(), body)
 	if err != nil {
 		return result, err
 	}

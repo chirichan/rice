@@ -1,7 +1,9 @@
-package rice
+package tests
 
 import (
 	"testing"
+
+	"github.com/chirichan/rice"
 )
 
 func TestRemoveInvisibleChars(t *testing.T) {
@@ -18,7 +20,7 @@ func TestRemoveInvisibleChars(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := RemoveInvisibleChars(tt.args.s); got != tt.want {
+			if got := rice.RemoveInvisibleChars(tt.args.s); got != tt.want {
 				t.Errorf("RemoveInvisibleChars() = %v, want %v", got, tt.want)
 			}
 		})
@@ -46,7 +48,7 @@ func TestSplitNString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SplitNString(tt.args.s, tt.args.index); got != tt.want {
+			if got := rice.SplitNString(tt.args.s, tt.args.index); got != tt.want {
 				t.Errorf("SplitNString() = %v, want %v", got, tt.want)
 			}
 		})
@@ -74,7 +76,7 @@ func TestPunycodeEncode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := PunycodeEncode(tt.args.chineseDomain)
+			got, err := rice.PunycodeEncode(tt.args.chineseDomain)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PunycodeEncode() error = %v, wantErr %v", err, tt.wantErr)
 				return

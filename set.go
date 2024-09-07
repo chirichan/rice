@@ -124,7 +124,7 @@ func Intersection[T comparable](s1, s2 []T) (inter []T) {
 			inter = append(inter, e)
 		}
 	}
-	//Remove dups from slice.
+	// Remove dups from slice.
 	inter = removeDups(inter)
 	return
 }
@@ -197,8 +197,8 @@ func Reverse[T any](items []T) {
 	}
 }
 
-// Pageination 切片分页
-func Pageination[T any](page, pageSize int, s []T) []T {
+// Pagination 切片分页
+func Pagination[T any](page, pageSize int, s []T) []T {
 	if page <= 0 {
 		page = 1
 	}

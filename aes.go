@@ -4,33 +4,11 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"io"
 	"os"
 )
-
-func RandomBytes(length int) ([]byte, error) {
-	key := make([]byte, length)
-	_, err := rand.Read(key)
-	if err != nil {
-		return nil, err
-	}
-	return key, nil
-}
-
-func RandomHexString(length int) (string, error) {
-	key, err := RandomBytes(length)
-	return hex.EncodeToString(key), err
-}
-
-func SHA256(text string) string {
-	hash := sha256.New()
-	hash.Write([]byte(text))
-	hashedBytes := hash.Sum(nil)
-	return hex.EncodeToString(hashedBytes)
-}
 
 // 创建 AES-GCM 密钥和 nonce
 func createCipher(key []byte) (cipher.AEAD, []byte, error) {

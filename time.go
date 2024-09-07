@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"database/sql"
 	"strconv"
 	"strings"
 	"time"
@@ -12,6 +13,13 @@ func Now() string {
 
 func TimeString(tm time.Time) string {
 	return tm.Format(time.DateTime)
+}
+
+func NullTimeString(tm sql.NullTime) string {
+	if tm.Valid {
+		return tm.Time.Format(time.DateTime)
+	}
+	return ""
 }
 
 func TodayZeroTime() time.Time {

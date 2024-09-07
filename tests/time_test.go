@@ -1,6 +1,10 @@
-package rice
+package tests
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/chirichan/rice"
+)
 
 func TestCountWeek(t *testing.T) {
 	type args struct {
@@ -16,7 +20,7 @@ func TestCountWeek(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CountWeek(tt.args.TimeFormat); got != tt.want {
+			if got := rice.CountWeek(tt.args.TimeFormat); got != tt.want {
 				t.Errorf("CountWeek() = %v, want %v", got, tt.want)
 			}
 		})

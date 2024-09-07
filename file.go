@@ -37,7 +37,8 @@ func FileExists(filename string) bool {
 	return !info.IsDir()
 }
 
-func WriteFileIfNotExists(name string, data []byte) error {
+// WriteFileSafe 安全的写入文件，如果文件已经存在则跳过写入
+func WriteFileSafe(name string, data []byte) error {
 	if FileExists(name) {
 		return nil
 	}
@@ -50,7 +51,19 @@ func WriteFileIfNotExists(name string, data []byte) error {
 	return os.WriteFile(name, data, 0644)
 }
 
-func AppendFileIfExists(name string, data []byte) error {
+// WriteFile 写入文件
+func WriteFile(name string, data []byte) error {
+	dir := filepath.Dir(name)
+	if !PathExists(dir) {
+		if err := os.MkdirAll(dir, 0644); err != nil {
+			return err
+		}
+	}
+	return os.WriteFile(name, data, 0644)
+}
+
+// AppendFile 往文件末尾追加内容
+func AppendFile(name string, data []byte) error {
 	if FileExists(name) {
 		f, err := os.OpenFile(name, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
@@ -62,16 +75,6 @@ func AppendFileIfExists(name string, data []byte) error {
 		}
 		return err
 	}
-	dir := filepath.Dir(name)
-	if !PathExists(dir) {
-		if err := os.MkdirAll(dir, 0644); err != nil {
-			return err
-		}
-	}
-	return os.WriteFile(name, data, 0644)
-}
-
-func WriteFileWhatever(name string, data []byte) error {
 	dir := filepath.Dir(name)
 	if !PathExists(dir) {
 		if err := os.MkdirAll(dir, 0644); err != nil {

@@ -17,16 +17,6 @@ func NewNotifyHook() *NotifyHook {
 	return &NotifyHook{Notifier: notify.New()}
 }
 
-func (t *NotifyHook) AddTelegramNotifierHook(token, proxy string, chatID ...int64) *NotifyHook {
-	telegramNotifier, err := NewTelegramNotifier(token, proxy)
-	if err != nil {
-		return t
-	}
-	telegramNotifier.AddReceivers(chatID...)
-	t.Notifier.UseServices(telegramNotifier)
-	return t
-}
-
 func (t *NotifyHook) Run(e *zerolog.Event, level zerolog.Level, message string) {
 	if level > zerolog.DebugLevel {
 		go func() {
