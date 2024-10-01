@@ -18,8 +18,11 @@ func NewResolver(address string) *net.Resolver {
 }
 
 func IP() string {
-	resp, _ := Get[map[string]any]("http://ip-api.com/json/?lang=zh-CN")
-	return resp["query"].(string)
+	resp, _ := Get[DefaultResponse](defaultHttpClient, "http://ip-api.com/json/?lang=zh-CN", nil)
+	if v, ok := resp["status"]; ok && v.(string) == "success" {
+		return resp["query"].(string)
+	}
+	return ""
 }
 
 func LocalAddr() string {
