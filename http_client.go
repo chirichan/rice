@@ -10,6 +10,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type DefaultResponse map[string]any
@@ -186,4 +187,39 @@ func PostMultipartForm[R any](hc *HttpClient, url string, fieldValues url.Values
 	err = json.Unmarshal(b, &result)
 
 	return result, err
+}
+
+// PutForm application/x-www-form-urlencoded
+func PutForm[R any](hc *HttpClient, url string, data url.Values) (R, error) {
+	var result R
+
+	req, err := http.NewRequest("PUT", url, strings.NewReader(data.Encode()))
+	if err != nil {
+		return result, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := Do[R](hc, req)
+	if err != nil {
+		return result, err
+	}
+
+	return response, err
+}
+
+func DeleteForm[R any](hc *HttpClient, url string, data url.Values) (R, error) {
+	var result R
+
+	req, err := http.NewRequest("DELETE", url, strings.NewReader(data.Encode()))
+	if err != nil {
+		return result, err
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := Do[R](hc, req)
+	if err != nil {
+		return result, err
+	}
+
+	return response, err
 }

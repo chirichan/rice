@@ -3,9 +3,23 @@ package rice
 import (
 	"strings"
 	"unicode"
+	"unsafe"
 
 	"github.com/mozillazg/go-pinyin"
 )
+
+// ByteStringUnsafe []byte to string
+func ByteStringUnsafe(b []byte) string { return *(*string)(unsafe.Pointer(&b)) }
+
+// StringByteUnsafe string to []byte
+func StringByteUnsafe(s string) []byte {
+	return *(*[]byte)(unsafe.Pointer(
+		&struct {
+			string
+			Cap int
+		}{s, len(s)},
+	))
+}
 
 // LowerTitle 首字母小写
 func LowerTitle(s string) string {

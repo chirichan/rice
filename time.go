@@ -7,38 +7,36 @@ import (
 	"time"
 )
 
-func Now() string {
-	return time.Now().Format(time.DateTime)
-}
-
 func TimeString(tm time.Time) string {
 	return tm.Format(time.DateTime)
 }
 
+func NowTimeString() string {
+	return TimeString(time.Now())
+}
+
 func NullTimeString(tm sql.NullTime) string {
 	if tm.Valid {
-		return tm.Time.Format(time.DateTime)
+		return TimeString(tm.Time)
 	}
 	return ""
 }
 
+func ZeroTime(tm time.Time) time.Time {
+	return time.Date(tm.Year(), tm.Month(), tm.Day(), 0, 0, 0, 0, tm.Location())
+}
+
 func TodayZeroTime() time.Time {
-	now := time.Now()
-	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
+	return ZeroTime(time.Now())
 }
 
 func TodayZeroTimestamp() int64 {
-	now := time.Now()
-	return time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).Unix()
-}
-
-func ZeroTime(tm time.Time) time.Time {
-	return time.Date(tm.Year(), tm.Month(), tm.Day(), 0, 0, 0, 0, time.Local)
+	return ZeroTime(time.Now()).Unix()
 }
 
 func ZeroTimestamp(ts int64) int64 {
 	tm := time.Unix(ts, 0)
-	return time.Date(tm.Year(), tm.Month(), tm.Day(), 0, 0, 0, 0, time.Local).Unix()
+	return ZeroTime(tm).Unix()
 }
 
 // CountWeek 获取当前日期为当月第几周
