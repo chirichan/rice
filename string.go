@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"strconv"
 	"strings"
 	"unicode"
 	"unsafe"
@@ -44,4 +45,13 @@ func RemoveInvisibleChars(s string) string {
 
 func Pinyin(s, sep string) string {
 	return strings.Join(pinyin.LazyConvert(s, nil), sep)
+}
+
+func StringToInt[T ~int | ~int32 | ~int64](s string) T {
+	i, _ := strconv.Atoi(s)
+	return T(i)
+}
+
+func IntToString[T ~int | ~int32 | ~int64](i T) string {
+	return strconv.FormatInt(int64(i), 10)
 }

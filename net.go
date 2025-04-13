@@ -3,6 +3,7 @@ package rice
 import (
 	"context"
 	"net"
+	"net/http"
 	"strings"
 	"time"
 )
@@ -18,7 +19,7 @@ func NewResolver(address string) *net.Resolver {
 }
 
 func IP() string {
-	resp, _ := Get[DefaultResponse](defaultHttpClient, "http://ip-api.com/json/?lang=zh-CN", nil)
+	resp, _ := Get[DefaultResponse](http.DefaultClient, "http://ip-api.com/json/?lang=zh-CN", nil)
 	if v, ok := resp["status"]; ok && v.(string) == "success" {
 		return resp["query"].(string)
 	}
