@@ -26,7 +26,7 @@ func TestGenerateToken(t *testing.T) {
 					UserID:   "123",
 					Username: "testuser",
 					Email:    "",
-					Role:     "admin",
+					RoleID:   "admin",
 					RegisteredClaims: jwt.RegisteredClaims{
 						Issuer:    "testissuer",
 						Subject:   "testsubject",
@@ -66,8 +66,8 @@ func TestGenerateToken(t *testing.T) {
 			if claim.Email != tt.args.claim.Email {
 				t.Errorf("ParseToken() got = %v, want %v", claim.Email, tt.args.claim.Email)
 			}
-			if claim.Role != tt.args.claim.Role {
-				t.Errorf("ParseToken() got = %v, want %v", claim.Role, tt.args.claim.Role)
+			if claim.RoleID != tt.args.claim.RoleID {
+				t.Errorf("ParseToken() got = %v, want %v", claim.RoleID, tt.args.claim.RoleID)
 			}
 		})
 	}
