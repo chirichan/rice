@@ -10,7 +10,7 @@ type MyCustomClaims struct {
 	UserID   string `json:"user_id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
-	RoleID   string `json:"role"`
+	RoleID   string `json:"role_id"`
 	jwt.RegisteredClaims
 }
 

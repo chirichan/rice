@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jaevor/go-nanoid"
+	"github.com/oklog/ulid/v2"
 	"github.com/rs/xid"
 	"github.com/yitter/idgenerator-go/idgen"
 )
@@ -30,4 +31,8 @@ func NextXID() string { return xid.New().String() }
 func NextNanoID() string {
 	gen, _ := nanoid.Canonic()
 	return gen()
+}
+
+func NextULID() string {
+	return ulid.Make().String()
 }
