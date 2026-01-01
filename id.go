@@ -33,6 +33,11 @@ func NextNanoID() string {
 	return gen()
 }
 
+func NextCustomNanoID(alphabet string) string {
+	gen, _ := nanoid.CustomASCII(alphabet, 21)
+	return gen()
+}
+
 func NextULID() string {
 	return ulid.Make().String()
 }

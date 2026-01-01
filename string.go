@@ -1,6 +1,7 @@
 package rice
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"unicode"
@@ -54,4 +55,29 @@ func StringToInt[T ~int | ~int32 | ~int64](s string) T {
 
 func IntToString[T ~int | ~int32 | ~int64](i T) string {
 	return strconv.FormatInt(int64(i), 10)
+}
+
+// CreateBidirectionalMapping 高效地创建两个字符串字符之间的双向映射
+// 它在一次循环中同时创建正向和反向两个 map
+func CreateBidirectionalMapping(from, to string) (map[rune]rune, map[rune]rune, error) {
+	fromRunes := []rune(from)
+	toRunes := []rune(to)
+
+	// 安全检查：确保可以一一对应
+	if len(fromRunes) != len(toRunes) {
+		return nil, nil, fmt.Errorf("无法创建映射：两个字符串长度不同 (%d vs %d)", len(fromRunes), len(toRunes))
+	}
+
+	// 创建两个 map，并预设容量以提高性能
+	// 这样 Go 运行时就无需在循环中频繁地为 map 扩容
+	mapFwd := make(map[rune]rune, len(fromRunes)) // 正向: from -> to
+	mapRev := make(map[rune]rune, len(toRunes))   // 反向: to -> from
+
+	for i, fromRune := range fromRunes {
+		toRune := toRunes[i]
+		mapFwd[fromRune] = toRune
+		mapRev[toRune] = fromRune
+	}
+
+	return mapFwd, mapRev, nil
 }
